@@ -1,0 +1,20 @@
+target/
+
+# Ignore eclipse project artifacts and instead rely on pom.xml
+# NOTE: Currently have these committed for many projects, but want to migrate to just pom.xml 
+.classpath
+.settings/
+.project
+
+# Ignore IDEA files
+*.iml
+*.ipr
+.idea/
+
+
+# Remnant of OSGi project configs under Eclipse - should eventually not generate a bin directory.
+bin/
+
+# Eclipse WTP is a pain in creating a manifest if we haven't
+*/src/main/java/META-INF/
+*/src/META-INF/

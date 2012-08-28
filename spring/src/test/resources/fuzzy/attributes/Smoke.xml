@@ -1,0 +1,4 @@
+<EnumAttributeSpec>
+	<clazz>org.fuzzydb.attrs.enums.EnumValue</clazz>
+	<enumdef>Smoke</enumdef>
+</EnumAttributeSpec>

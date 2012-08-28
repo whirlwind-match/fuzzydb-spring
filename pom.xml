@@ -1,0 +1,131 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.fuzzydb</groupId>
+    <artifactId>org.fuzzydb.spring.aggregator</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0.RC1-SNAPSHOT</version>
+
+    <name>${project.artifactId}</name>
+    <description>fuzzydb is a fuzzy matching database engine capable of providing human-like search results that make life 
+        much easier for users of websites searching for things like cars, houses, people and jobs</description>
+    <url>http://www.fuzzydb.org</url>
+
+    <modules>
+        <module>spring</module>
+
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <stagingDirectory>/dev/wwm/whirlwind-match.github.com/site</stagingDirectory>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <distributionManagement>
+        <site>
+            <id>staging</id>
+            <url>file:///${user.dir}/target/staging</url>
+        </site>
+    </distributionManagement>
+
+    <profiles>
+		<profile>
+			<id>central</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>sonatype-nexus-snapshots</id>
+					<name>Sonatype Nexus Snapshots</name>
+					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+				</snapshotRepository>
+				<repository>
+					<id>sonatype-nexus-staging</id>
+					<name>Nexus Release Repository</name>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>staging</id>
+            <distributionManagement>
+                <site>
+                    <id>staging</id>
+                    <url>file:///${user.dir}/target/staging</url>
+                </site>
+                <repository>
+                    <id>staging</id>
+                    <url>file:///${user.dir}/target/staging</url>
+                </repository>
+                <snapshotRepository>
+                    <id>staging</id>
+                    <url>file:///${user.dir}/target/staging</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+
+    <organization>
+        <name>Whirlwind Match Limited</name>
+        <url>http://www.whirlwindmatch.com</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>Open Software License v. 3.0</name>
+            <url>http://opensource.org/licenses/OSL-3.0</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>http://github.com/whirlwind-match/fuzzydb-spring</url>
+        <connection>scm:git:git@github.com:whirlwind-match/fuzzydb-spring.git</connection>
+        <developerConnection>scm:git:git@github.com:whirlwind-match/fuzzydb-spring.git</developerConnection>
+    </scm>
+    <mailingLists>
+        <mailingList>
+            <name>fuzzydb-users</name>
+            <subscribe>http://groups.google.com/group/fuzzydb-users/subscribe</subscribe>
+            <post>fuzzydb-users@googlegroups.com</post>
+            <archive>http://groups.google.com/group/fuzzydb-users</archive>
+        </mailingList>
+    </mailingLists>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/whirlwind-match/fuzzydb/issues/</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <name>Neale Upstone</name>
+            <organization>Whirlwind Match Limited</organization>
+            <organizationUrl>http://www.whirlwindmatch.com</organizationUrl>
+        </developer>
+    </developers>
+
+</project>
