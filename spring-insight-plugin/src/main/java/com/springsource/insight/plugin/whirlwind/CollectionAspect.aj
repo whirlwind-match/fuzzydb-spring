@@ -16,9 +16,9 @@ public aspect CollectionAspect extends AbstractOperationCollectionAspect {
 	// In parent aspect this triggers the call of Operation.enter() on before advice
 	// and Operation.exitNormal() afterReturning.
 	public pointcut collectionPoint() : 
-		execution(public * com.wwm.db.DataOperations.count(..)) || 
-		execution(public * com.wwm.db.DataOperations.retrieve*(..)) || 
-		execution(public * com.wwm.db.DataOperations.query*(..));
+		execution(public * org.fuzzydb.client.DataOperations.count(..)) || 
+		execution(public * org.fuzzydb.client.DataOperations.retrieve*(..)) || 
+		execution(public * org.fuzzydb.client.DataOperations.query*(..));
 	
 	@Override
 	protected WhirlwindOperation createOperation(JoinPoint jp) {
