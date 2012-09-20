@@ -167,6 +167,9 @@ public class FuzzyEntityConverter<E>
 				else if (persistentProperty.getType().equals(UUID.class)) {
 					addNonFuzzyAttr(sink, persistentProperty.getName(), value.toString());
 				}
+				else if (persistentProperty.getType().getName().equals("org.bson.types.ObjectId")) {
+					addNonFuzzyAttr(sink, persistentProperty.getName(), value.toString());
+				}
 				else {
 					// need to sort out things like IPoint3D being mapped from postcode !!  Always a pain in the but this one!
 					addConvertedAttribute(sink, persistentProperty.getName(), value);
