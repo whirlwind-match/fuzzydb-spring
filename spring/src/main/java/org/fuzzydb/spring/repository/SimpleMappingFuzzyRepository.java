@@ -36,7 +36,7 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 	@Autowired
 	private AttributeDefinitionService attrDefinitionService;
 
-	private FuzzyEntityConverter<T> entityConverter;
+	private FuzzyEntityConverter<T, MappedFuzzyItem> entityConverter;
 	
 	private final boolean useDefaultNamespace;
 
@@ -62,7 +62,7 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 	@Override
 	public void afterPropertiesSet() {
 		super.afterPropertiesSet();
-		entityConverter = new FuzzyEntityConverter<T>(converter, attrDefinitionService, persister);
+		entityConverter = new FuzzyEntityConverter<T,MappedFuzzyItem>(converter, attrDefinitionService, persister);
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 			Ref<MappedFuzzyItem> existingRef) {
 		
 		MappedFuzzyItem existing = getPersister().retrieve(existingRef);
-		existing.setAttributeMap(toWrite.getAttributeMap());
+		existing.mergeFrom(toWrite);
 		return existing;
 	}
 

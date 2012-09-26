@@ -40,17 +40,17 @@ import org.springframework.util.Assert;
  *
  * @param <E>
  */
-public class FuzzyEntityConverter<E>
+public class FuzzyEntityConverter<E, I extends MappedItem>
 		implements
-		EntityConverter<FuzzyPersistentEntity<E>, FuzzyProperty, E, MappedItem> {
+		EntityConverter<FuzzyPersistentEntity<E>, FuzzyProperty, E, I> {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	
+
 	private final FuzzyMappingContext<E> mappingContext;
 	private final WhirlwindConversionService converter;
 	private final AttributeDefinitionService attrDefinitionService;
 	private final DataOperations persister;
-	
+
 	public FuzzyEntityConverter(WhirlwindConversionService converter, AttributeDefinitionService attrDefinitionService, DataOperations persister) {
 		this.mappingContext = new FuzzyMappingContext<E>();
 		this.converter = converter;
@@ -58,27 +58,27 @@ public class FuzzyEntityConverter<E>
 		this.persister = persister;
 		mappingContext.setAttrDefinitionService(attrDefinitionService);
 	}
-	
+
 	@Override
-	public <R extends E> R read(Class<R> type, final MappedItem source) {
+	public <R extends E> R read(Class<R> type, final I source) {
 		// mapping context can deal with subtypes of E, of which R is one
 		FuzzyPersistentEntity<E> persistentEntity = mappingContext.getPersistentEntity(type);
-		
+
 		E result = ReflectionEntityInstantiator.INSTANCE.createInstance(persistentEntity, null);
 		final BeanWrapper<FuzzyPersistentEntity<E>, E> wrapper = BeanWrapper.create(result, converter);
-		
+
 		// It should be quicker to go through what properties we have than to go looking for
 		// all properties found in the attribute map than repeated lookups based on the persistent properties
 		// using persistentEntity.doWithProperties()
 		for( IAttribute attr : source.getAttributeMap()) {
 			addConvertedAttribute(persistentEntity, wrapper, attr);
 		}
-		
+
 		// Non-indexed String attributes
 		for ( Entry<String, String> entry: source.getNonIndexAttrs().entrySet()) {
 			setProperty(wrapper, persistentEntity, entry.getKey(), entry.getValue());
 		}
-		
+
 		String value = toExternalId(persister.getRef(source));
 		setProperty(wrapper, persistentEntity.getIdProperty(), value);
 
@@ -90,12 +90,12 @@ public class FuzzyEntityConverter<E>
 	}
 
 	/**
-	 * Map the given {@link IAttribute} to the {@link PersistentProperty} by name. 
+	 * Map the given {@link IAttribute} to the {@link PersistentProperty} by name.
 	 */
 	private <R> void addConvertedAttribute(FuzzyPersistentEntity<E> entity, BeanWrapper<FuzzyPersistentEntity<E>,E> wrapper, IAttribute attr) {
 		String key = attrDefinitionService.getAttrName(attr.getAttrId());
 		Object value = converter.convert(attr, attrDefinitionService.getExternalClass(attr.getAttrId()));
-		
+
 		FuzzyProperty persistentProperty = entity.getPersistentProperty(key);
 		// if there isn't a field, then it must have come from attributes map
 		if (persistentProperty == null) {
@@ -126,16 +126,16 @@ public class FuzzyEntityConverter<E>
 	}
 
 	@Override
-	public void write(E source, final MappedItem sink) {
+	public void write(E source, final I sink) {
 		FuzzyPersistentEntity<E> persistentEntity = mappingContext.getPersistentEntity(source.getClass());
-		
+
 		final BeanWrapper<FuzzyPersistentEntity<E>, E> wrapper = BeanWrapper.create(source, converter);
 
 		applyDerivations(persistentEntity, wrapper);
 
 		// Iterate over peristent props and map as needed
 		persistentEntity.doWithProperties(new PropertyHandler<FuzzyProperty>() {
-			
+
 			@Override
 			public void doWithPersistentProperty(FuzzyProperty persistentProperty) {
 
@@ -145,12 +145,12 @@ public class FuzzyEntityConverter<E>
 				Object value = getProperty(wrapper, persistentProperty);
 				if (value == null)
 					return;
-				
+
 				if (persistentProperty.isIdProperty()) {
-					// currently dealt with by merge() - TODO Need to look at whether we need to deal with ID at this level 
+					// currently dealt with by merge() - TODO Need to look at whether we need to deal with ID at this level
 //					toInternalId(value);
 				}
-				
+
 				else if (persistentProperty.isMap() && persistentProperty.getComponentType().equals(String.class)) {
 					@SuppressWarnings("unchecked")
 					Map<String,Object> map = (Map<String,Object>) value;
@@ -160,7 +160,7 @@ public class FuzzyEntityConverter<E>
 				else if (persistentProperty.isFuzzyAttribute()) {
 					addConvertedAttribute(sink, persistentProperty.getName(), value);
 				}
-				
+
 				// To persist strings,
 				else if (persistentProperty.getType().equals(String.class)) {
 					addNonFuzzyAttr(sink, persistentProperty.getName(), (String) value);
@@ -179,12 +179,12 @@ public class FuzzyEntityConverter<E>
 			}
 
 		});
-	
+
 	}
 
 	/**
 	 * Apply derivations on fields marked {@link DerivedField} to the external entity.
-	 * 
+	 *
 	 * This can be used in both directions.
 	 */
 	protected void applyDerivations(FuzzyPersistentEntity<E> persistentEntity,
@@ -227,7 +227,7 @@ public class FuzzyEntityConverter<E>
 		if (value == null || value instanceof String && value.toString().length() == 0)
 			return;
 
-			
+
 		// We expect the id to already be known
 		int id;
 		try {
@@ -236,9 +236,9 @@ public class FuzzyEntityConverter<E>
 			// if already known but clashing, convert value to required type
 			id = attrDefinitionService.getAttrId(key);
 			Class<?> expected = attrDefinitionService.getExternalClass(id);
-			value = converter.convert(value, expected); 
+			value = converter.convert(value, expected);
 		}
-		
+
 		Class<? extends IAttribute> dbClass = attrDefinitionService.getDbClass(id);
 		// If can't convert as is, wrap the value based on the db class
 		if (!converter.canConvert(value.getClass(), dbClass)) {
@@ -248,7 +248,7 @@ public class FuzzyEntityConverter<E>
 		IAttribute attr = converter.convert(value, dbClass);
 		result.getAttributeMap().put(id, attr);
 	}
-	
+
 	private Object wrapValue(String key, Object value, Class<? extends IAttribute> dbClass) {
 		if (dbClass.equals(EnumExclusiveValue.class))
 			return new EnumAttribute(key, "not used", (String)value);
@@ -273,7 +273,7 @@ public class FuzzyEntityConverter<E>
 			FuzzyProperty persistentProperty) {
 		Assert.notNull(wrapper);
 		Assert.notNull(persistentProperty);
-		
+
 		return (R) wrapper.getProperty(persistentProperty);
 	}
 
@@ -299,9 +299,9 @@ public class FuzzyEntityConverter<E>
 		// Externally we ref as Ref<T>  and we are using the real ref here
 		return RefImpl.valueOf(id);
 	}
-	
-	protected String toExternalId(Ref<MappedItem> ref) {
-		return ((RefImpl<MappedItem>) ref).asString();
+
+	protected String toExternalId(Ref<I> ref) {
+		return ((RefImpl<I>) ref).asString();
 	}
 
 
