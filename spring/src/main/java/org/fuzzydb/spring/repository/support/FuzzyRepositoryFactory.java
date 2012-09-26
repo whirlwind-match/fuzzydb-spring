@@ -6,8 +6,8 @@ import org.fuzzydb.attrs.AttributeDefinitionService;
 import org.fuzzydb.attrs.converters.WhirlwindConversionService;
 import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.spring.repository.FuzzyRepository;
+import org.fuzzydb.spring.repository.IdFieldMappingFuzzyRepository;
 import org.fuzzydb.spring.repository.RawCRUDRepository;
-import org.fuzzydb.spring.repository.SimpleMappingFuzzyRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -46,7 +46,7 @@ public class FuzzyRepositoryFactory extends RepositoryFactorySupport {
 
         // depending on interface .. create diff implementations
         if (FuzzyRepository.class.isAssignableFrom(repositoryInterface)) {
-        	SimpleMappingFuzzyRepository repo = new SimpleMappingFuzzyRepository<T>((Class<T>) metadata.getDomainType(), false,
+        	IdFieldMappingFuzzyRepository<T, ID> repo = new IdFieldMappingFuzzyRepository<T, ID>((Class<T>) metadata.getDomainType(), false,
         			persister, conversionService, attributeDefinitionService);
         	repo.afterPropertiesSet();
         	return repo;
@@ -68,7 +68,7 @@ public class FuzzyRepositoryFactory extends RepositoryFactorySupport {
         Class<?> repositoryInterface = metadata.getRepositoryInterface();
 
         if (FuzzyRepository.class.isAssignableFrom(repositoryInterface)) {
-        	return SimpleMappingFuzzyRepository.class;
+        	return IdFieldMappingFuzzyRepository.class;
         }
 
     	if (CrudRepository.class.isAssignableFrom(repositoryInterface)) {

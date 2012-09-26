@@ -26,7 +26,6 @@ import org.fuzzydb.client.Ref;
 import org.fuzzydb.client.internal.RefImpl;
 import org.fuzzydb.core.whirlwind.internal.IAttribute;
 import org.fuzzydb.core.whirlwind.internal.IAttributeMap;
-import org.fuzzydb.spring.repository.SimpleMappingFuzzyRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,9 +38,9 @@ import org.springframework.data.annotation.Id;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class SimpleMappingFuzzyRepositoryTest  {
+public class IdFieldMappingFuzzyRepositoryTest  {
 
-	private SimpleMappingFuzzyRepository<FuzzyItem> repo;
+	private IdFieldMappingFuzzyRepository<FuzzyItem, String> repo;
 
 	@Mock
 	private DataOperations persister;
@@ -65,7 +64,7 @@ public class SimpleMappingFuzzyRepositoryTest  {
 		new DirectFieldAccessor(converter).setPropertyValue("attrDefinitionService", attrDefinitionService);
 		converter.afterPropertiesSet();
 
-		repo = new SimpleMappingFuzzyRepository<FuzzyItem>(FuzzyItem.class, false, persister, converter, attrDefinitionService);
+		repo = new IdFieldMappingFuzzyRepository<FuzzyItem, String>(FuzzyItem.class, false, persister, converter, attrDefinitionService);
 		repo.afterPropertiesSet();
 	}
 

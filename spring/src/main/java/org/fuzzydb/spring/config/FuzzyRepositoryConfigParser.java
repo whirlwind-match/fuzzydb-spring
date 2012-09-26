@@ -2,7 +2,7 @@ package org.fuzzydb.spring.config;
 
 import static org.fuzzydb.spring.config.Constants.DEFAULT_REPO_ID;
 
-import org.fuzzydb.spring.repository.SimpleMappingFuzzyRepository;
+import org.fuzzydb.spring.repository.IdFieldMappingFuzzyRepository;
 import org.fuzzydb.spring.repository.support.FuzzyRepositorySupport;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,7 +48,7 @@ public class FuzzyRepositoryConfigParser extends AbstractBeanDefinitionParser {
 
 	    String useDefaultNamespace = element.getAttribute("useDefaultNamespace");
 
-	    BeanDefinitionBuilder repositoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(SimpleMappingFuzzyRepository.class);
+	    BeanDefinitionBuilder repositoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(IdFieldMappingFuzzyRepository.class);
 	    repositoryBuilder.addConstructorArgValue(persistedClass);
 	    repositoryBuilder.addConstructorArgValue( useDefaultNamespace.equals("true") );
 	    // TODO: Look at best practice for qualifying repositories

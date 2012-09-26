@@ -1,10 +1,12 @@
 package org.fuzzydb.spring.repository;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import org.fuzzydb.attrs.AttributeDefinitionService;
 import org.fuzzydb.attrs.converters.WhirlwindConversionService;
 import org.fuzzydb.attrs.search.SearchSpecImpl;
+import org.fuzzydb.attrs.userobjects.IdFieldMappedFuzzyItem;
 import org.fuzzydb.attrs.userobjects.MappedFuzzyItem;
 import org.fuzzydb.attrs.userobjects.MappedItem;
 import org.fuzzydb.client.DataOperations;
@@ -17,19 +19,19 @@ import org.fuzzydb.core.whirlwind.SearchSpec;
 import org.fuzzydb.spring.convert.FuzzyEntityConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mapping.model.MappingException;
 
 /**
- * A simple (PoC) Repository implementation that performs a minimal conversion to get attributes
- * in and out of the database
- *
- * Fuller support will come in time. This is a starting point to get a walking-skeleton
- * up and err... walking.
+ * A repository implementation that performs a minimal conversion to get attributes
+ * in and out of the database, and is based on having an {@link Id} annotated field
+ * which is used as the primary key for these items.
  *
  * @author Neale Upstone
  *
- * @param <T> the type being stored (Must contain a field: Map<String,Object> attributes for the fuzzy data)
+ * @param <T> the type being stored
  */
-public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepository<MappedItem, T, String> implements FuzzyRepository<T,String>, InitializingBean {
+public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends AbstractConvertingRepository<MappedItem, T, KEY> implements FuzzyRepository<T,KEY>, InitializingBean {
 
 	private final WhirlwindConversionService converter;
 
@@ -39,10 +41,13 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 
 	private final boolean useDefaultNamespace;
 
-	private final IdPersistenceHelper<String, MappedItem> idPersistenceHelper = new RefAsStringIdPersistenceHelper<MappedItem>();
+	private IdPersistenceHelper<KEY, MappedItem> idPersistenceHelper;
+
+	private Class<? extends MappedItem> internalType;
+
 
 	@Autowired
-	public SimpleMappingFuzzyRepository(Class<T> type, boolean useDefaultNamespace, DataOperations persister,
+	public IdFieldMappingFuzzyRepository(Class<T> type, boolean useDefaultNamespace, DataOperations persister,
 			WhirlwindConversionService conversionService, AttributeDefinitionService attributeDefinitionService) {
 		super(type, persister);
 		this.useDefaultNamespace = useDefaultNamespace;
@@ -50,10 +55,20 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 		this.attrDefinitionService = attributeDefinitionService;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void afterPropertiesSet() {
 		super.afterPropertiesSet();
-		entityConverter = new FuzzyEntityConverter<T,MappedItem>(converter, attrDefinitionService, persister);
+		entityConverter = new FuzzyEntityConverter<T, MappedItem>(converter, attrDefinitionService, persister);
+
+		// select correct idPersistenceHelper for the index type
+		if (entityConverter.getMappingContext().getPersistentEntity(type).getIdProperty().getType().equals(String.class)) {
+			idPersistenceHelper = (IdPersistenceHelper<KEY, MappedItem>) new RefAsStringIdPersistenceHelper<MappedItem>();
+			internalType = MappedFuzzyItem.class;
+		} else {
+			idPersistenceHelper = null; // TODO: The one using an index
+			internalType = IdFieldMappedFuzzyItem.class;
+		}
 	}
 
 	@Override
@@ -65,16 +80,25 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 
 	@Override
 	protected MappedItem toInternal(T external) {
-		MappedItem result = new MappedFuzzyItem();
+		MappedItem result;
+		try {
+			result = getInternalType().newInstance();
+		} catch (InstantiationException e) {
+			throw new MappingException(e.getMessage(), e);
+		} catch (IllegalAccessException e) {
+			throw new MappingException(e.getMessage(), e);
+		}
 
 		entityConverter.write(external, result);
 
 		return result;
 	}
 
+
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Class<MappedFuzzyItem> getInternalType() {
-		return MappedFuzzyItem.class;
+	protected Class<MappedItem> getInternalType() {
+		return (Class<MappedItem>) internalType;
 	}
 
 	@Override
@@ -82,7 +106,7 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 		SearchSpec spec = new SearchSpecImpl(getInternalType(), matchStyle);
 		spec.setTargetNumResults(maxResults);
 		spec.setAttributes(internal);
-		ResultSet<Result<MappedItem>> resultsInternal = getPersister().query(MappedItem.class, spec);
+		ResultSet<Result<MappedItem>> resultsInternal = getPersister().query(getInternalType(), spec);
 		final ResultIterator<Result<MappedItem>> resultIterator = resultsInternal.iterator();
 
 		Iterator<Result<T>> iterator = new ConvertingIterator<Result<MappedItem>,Result<T>>(resultIterator) {
@@ -109,18 +133,12 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 
 	@Override
 	protected void selectNamespace() {
-		getPersister().setNamespace(
-				useDefaultNamespace ? "" : type.getCanonicalName()
-				);
+		String namespace = useDefaultNamespace ? "" : type.getCanonicalName();
+		getPersister().setNamespace(namespace);
 	}
 
 	@Override
-	protected IdPersistenceHelper<String, MappedItem> getIdPersistenceHelper() {
+	protected IdPersistenceHelper<KEY, MappedItem> getIdPersistenceHelper() {
 		return idPersistenceHelper;
 	}
-
-//	private BasicPersistentEntity<T, BasicPers> createEntity(Comparator<T> comparator) {
-//		return new BasicPersistentEntity<Person, T>(ClassTypeInformation.from(Person.class), comparator);
-//	}
-
 }
