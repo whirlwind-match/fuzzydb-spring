@@ -9,6 +9,7 @@ import org.fuzzydb.attrs.converters.WhirlwindConversionService;
 import org.fuzzydb.attrs.enums.EnumExclusiveValue;
 import org.fuzzydb.attrs.enums.EnumMultipleValue;
 import org.fuzzydb.attrs.userobjects.MappedFuzzyItem;
+import org.fuzzydb.attrs.userobjects.MappedItem;
 import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
 import org.fuzzydb.client.internal.RefImpl;
@@ -41,7 +42,7 @@ import org.springframework.util.Assert;
  */
 public class FuzzyEntityConverter<E>
 		implements
-		EntityConverter<FuzzyPersistentEntity<E>, FuzzyProperty, E, MappedFuzzyItem> {
+		EntityConverter<FuzzyPersistentEntity<E>, FuzzyProperty, E, MappedItem> {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -59,7 +60,7 @@ public class FuzzyEntityConverter<E>
 	}
 	
 	@Override
-	public <R extends E> R read(Class<R> type, final MappedFuzzyItem source) {
+	public <R extends E> R read(Class<R> type, final MappedItem source) {
 		// mapping context can deal with subtypes of E, of which R is one
 		FuzzyPersistentEntity<E> persistentEntity = mappingContext.getPersistentEntity(type);
 		
@@ -125,7 +126,7 @@ public class FuzzyEntityConverter<E>
 	}
 
 	@Override
-	public void write(E source, final MappedFuzzyItem sink) {
+	public void write(E source, final MappedItem sink) {
 		FuzzyPersistentEntity<E> persistentEntity = mappingContext.getPersistentEntity(source.getClass());
 		
 		final BeanWrapper<FuzzyPersistentEntity<E>, E> wrapper = BeanWrapper.create(source, converter);
@@ -206,18 +207,18 @@ public class FuzzyEntityConverter<E>
 		}
 	}
 
-	private void addNonFuzzyAttr(MappedFuzzyItem sink, String name, String value) {
+	private void addNonFuzzyAttr(MappedItem sink, String name, String value) {
 		sink.setNonIndexString(name, value);
 	}
 
-	private void addAttributesFromMap(MappedFuzzyItem sink, Map<String,Object> map) {
+	private void addAttributesFromMap(MappedItem sink, Map<String,Object> map) {
 		for (Entry<String, Object> item : map.entrySet()) {
 			addConvertedAttribute(sink, item.getKey(), item.getValue());
 		}
 	}
 
 	// Doesn't currently handle things that cannot be represented as fuzzy attributes
-	private void addConvertedAttribute(MappedFuzzyItem result,
+	private void addConvertedAttribute(MappedItem result,
 			String key, Object value) {
 
 		Assert.hasLength(key);
@@ -299,8 +300,8 @@ public class FuzzyEntityConverter<E>
 		return RefImpl.valueOf(id);
 	}
 	
-	protected String toExternalId(Ref<MappedFuzzyItem> ref) {
-		return ((RefImpl<MappedFuzzyItem>) ref).asString();
+	protected String toExternalId(Ref<MappedItem> ref) {
+		return ((RefImpl<MappedItem>) ref).asString();
 	}
 
 
