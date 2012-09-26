@@ -1,17 +1,16 @@
 package org.fuzzydb.spring.repository;
 
-import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
 
 public class RawIdPersistenceHelper<I> implements IdPersistenceHelper<org.fuzzydb.client.Ref<I>, I> {
 
 	@Override
-	public boolean exists(DataOperations persister, Ref<I> id) {
-		return findEntityById(persister, id) != null;
+	public boolean exists(Ref<I> id) {
+		return findEntityById(id) != null;
 	}
 
 	@Override
-	public I findEntityById(DataOperations persister, Ref<I> id) {
+	public I findEntityById(Ref<I> id) {
 		return persister.retrieve(id);
 	}
 

@@ -1,6 +1,5 @@
 package org.fuzzydb.spring.repository;
 
-import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
 
 
@@ -11,9 +10,9 @@ import org.fuzzydb.client.Ref;
  */
 public interface IdPersistenceHelper<ID, INTERNAL_TYPE> {
 
-	boolean exists(DataOperations persister, ID id);
+	boolean exists(ID id);
 
-	INTERNAL_TYPE findEntityById(DataOperations persister, ID id);
+	INTERNAL_TYPE findEntityById(ID id);
 
 	Ref<INTERNAL_TYPE> toInternalId(ID id);
 

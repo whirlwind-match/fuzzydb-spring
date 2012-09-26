@@ -8,13 +8,21 @@ import org.fuzzydb.client.internal.RefImpl;
 public final class RefAsStringIdPersistenceHelper<I> implements
 		IdPersistenceHelper<String, I> {
 
-	@Override
-	public boolean exists(DataOperations persister, String id) {
-		return findEntityById(persister, id) != null;
+
+	private final DataOperations persister;
+
+
+	public RefAsStringIdPersistenceHelper(DataOperations persister) {
+		this.persister = persister;
 	}
 
 	@Override
-	public I findEntityById(DataOperations persister, String id) {
+	public boolean exists(String id) {
+		return findEntityById(id) != null;
+	}
+
+	@Override
+	public I findEntityById(String id) {
 		Ref<I> ref = toInternalId(id);
 		I entity;
 		try {

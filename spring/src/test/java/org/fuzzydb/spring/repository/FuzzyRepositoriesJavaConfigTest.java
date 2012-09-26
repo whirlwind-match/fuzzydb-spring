@@ -1,16 +1,19 @@
 package org.fuzzydb.spring.repository;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 
+import org.bson.types.ObjectId;
 import org.fuzzydb.client.Store;
 import org.fuzzydb.server.EmbeddedClientFactory;
+import org.fuzzydb.spring.entities.ObjectIdItem;
 import org.fuzzydb.spring.examples.ExampleCrudRepository;
 import org.fuzzydb.spring.examples.ExampleFuzzyRepository;
-import org.fuzzydb.spring.repository.FuzzyRepository;
+import org.fuzzydb.spring.examples.ObjectIdIndexedFuzzyRepository;
 import org.fuzzydb.spring.repository.support.EnableFuzzyRepositories;
 import org.fuzzydb.spring.transaction.WhirlwindPlatformTransactionManager;
 import org.junit.Test;
@@ -51,6 +54,9 @@ public class FuzzyRepositoriesJavaConfigTest {
 	@Autowired
 	private ExampleFuzzyRepository fuzzyRepo;
 
+	@Autowired
+	private ObjectIdIndexedFuzzyRepository objectIdRepo;
+
 	@Test
 	public void repositoryShouldBeCreatedForInterface() {
 		assertTrue( repo instanceof CrudRepository);
@@ -71,5 +77,17 @@ public class FuzzyRepositoriesJavaConfigTest {
 
 		FuzzyItem item = fuzzyRepo.findFirst();
 		assertThat(item.getDescription(), is("some description"));
+	}
+
+	@Test
+	public void shouldBeAbleToRetrieveByObjectId() {
+		assertTrue( objectIdRepo instanceof FuzzyRepository);
+
+		ObjectIdItem item = objectIdRepo.save( new ObjectIdItem("object id item"));
+		ObjectId id = item.getId();
+		assertNotNull(id);
+
+		ObjectIdItem retrieved = objectIdRepo.findOne(id);
+		assertNotNull(retrieved);
 	}
 }

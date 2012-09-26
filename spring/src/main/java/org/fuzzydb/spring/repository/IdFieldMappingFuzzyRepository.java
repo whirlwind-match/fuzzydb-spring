@@ -31,7 +31,7 @@ import org.springframework.data.mapping.model.MappingException;
  *
  * @param <T> the type being stored
  */
-public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends AbstractConvertingRepository<MappedItem, T, KEY> implements FuzzyRepository<T,KEY>, InitializingBean {
+public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable & Comparable<KEY>> extends AbstractConvertingRepository<MappedItem, T, KEY> implements FuzzyRepository<T,KEY>, InitializingBean {
 
 	private final WhirlwindConversionService converter;
 
@@ -41,7 +41,7 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends 
 
 	private final boolean useDefaultNamespace;
 
-	private IdPersistenceHelper<KEY, MappedItem> idPersistenceHelper;
+	private IdPersistenceHelper<KEY, ? extends MappedItem> idPersistenceHelper;
 
 	private Class<? extends MappedItem> internalType;
 
@@ -63,10 +63,10 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends 
 
 		// select correct idPersistenceHelper for the index type
 		if (entityConverter.getMappingContext().getPersistentEntity(type).getIdProperty().getType().equals(String.class)) {
-			idPersistenceHelper = (IdPersistenceHelper<KEY, MappedItem>) new RefAsStringIdPersistenceHelper<MappedItem>();
+			idPersistenceHelper = (IdPersistenceHelper<KEY, ? extends MappedItem>)new RefAsStringIdPersistenceHelper<MappedItem>(persister);
 			internalType = MappedFuzzyItem.class;
 		} else {
-			idPersistenceHelper = null; // TODO: The one using an index
+			idPersistenceHelper = new IndexedIdPersistenceHelper<KEY>(persister);
 			internalType = IdFieldMappedFuzzyItem.class;
 		}
 	}
@@ -137,8 +137,9 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends 
 		getPersister().setNamespace(namespace);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected IdPersistenceHelper<KEY, MappedItem> getIdPersistenceHelper() {
-		return idPersistenceHelper;
+		return (IdPersistenceHelper<KEY, MappedItem>) idPersistenceHelper;
 	}
 }

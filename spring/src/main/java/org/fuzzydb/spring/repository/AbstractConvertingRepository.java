@@ -97,7 +97,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	public T findOne(ID id) {
 		selectNamespace();
 
-		I entityById = getIdPersistenceHelper().findEntityById(persister, id);
+		I entityById = getIdPersistenceHelper().findEntityById(id);
 		T external = fromInternal(entityById);
 		Ref<I> ref = getIdPersistenceHelper().toInternalId(id);
 		setId(external, getIdPersistenceHelper().toExternalId(ref));
@@ -119,7 +119,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	@Transactional(readOnly=true)
 	public boolean exists(ID id) {
 		selectNamespace();
-		return getIdPersistenceHelper().exists(persister,id);
+		return getIdPersistenceHelper().exists(id);
 	}
 
 	@Override
