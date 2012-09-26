@@ -8,7 +8,6 @@ import org.fuzzydb.attrs.search.SearchSpecImpl;
 import org.fuzzydb.attrs.userobjects.MappedFuzzyItem;
 import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
-import org.fuzzydb.client.internal.RefImpl;
 import org.fuzzydb.client.internal.ResultImpl;
 import org.fuzzydb.core.query.Result;
 import org.fuzzydb.core.query.ResultIterator;
@@ -40,6 +39,8 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 	private FuzzyEntityConverter<T> entityConverter;
 	
 	private final boolean useDefaultNamespace;
+
+	private final IdPersistenceHelper<String, MappedFuzzyItem> idPersistenceHelper = new RefAsStringIdPersistenceHelper<MappedFuzzyItem>();
 	
 	public SimpleMappingFuzzyRepository(Class<T> type) {
 		this(type,false);
@@ -78,20 +79,6 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 		entityConverter.write(external, result);
 
 		return result;
-	}
-
-
-	
-
-	@Override
-	protected final Ref<MappedFuzzyItem> toInternalId(String id) {
-		// Externally we ref as Ref<T>  and we are using the real ref here
-		return RefImpl.valueOf(id);
-	}
-	
-	@Override
-	protected String toExternalId(Ref<MappedFuzzyItem> ref) {
-		return ((RefImpl<MappedFuzzyItem>) ref).asString();
 	}
 
 	@Override
@@ -134,6 +121,11 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 		getPersister().setNamespace(
 				useDefaultNamespace ? "" : type.getCanonicalName()
 				);
+	}
+
+	@Override
+	protected IdPersistenceHelper<String, MappedFuzzyItem> getIdPersistenceHelper() {
+		return idPersistenceHelper;
 	}
 
 //	private BasicPersistentEntity<T, BasicPers> createEntity(Comparator<T> comparator) {

@@ -71,7 +71,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		I toWrite = toInternal(entity);
 		ID existingRef = getId(entity);
 		if (existingRef != null) {
-			I merged = merge(toWrite, toInternalId(existingRef)); 
+			I merged = merge(toWrite, getIdPersistenceHelper().toInternalId(existingRef)); 
 			try {
 				persister.update(merged);
 				return entity;
@@ -82,11 +82,9 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		}
 		Ref<I> ref = persister.save(toWrite);
 		
-		setId(entity, toExternalId(ref));
+		setId(entity, getIdPersistenceHelper().toExternalId(ref));
 		return entity;
 	}
-
-	abstract protected ID toExternalId(Ref<I> ref);
 
 	/**
 	 * Should do anything needed to merge an existing back in with
@@ -94,22 +92,19 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	 */
 	abstract protected I merge(I toWrite, Ref<I> existingId); 
 	
-	abstract protected Ref<I> toInternalId(ID id);
-	
 	@Override
 	@Transactional(readOnly=true)
 	public T findOne(ID id) {
 		selectNamespace();
-		Ref<I> ref = toInternalId(id);
-		T entity;
-		try {
-			entity = fromInternal(persister.retrieve(ref));
-		} catch (UnknownObjectException e) {
-			return null;
-		}
-		setId(entity, toExternalId(ref));
-		return entity;
+
+		I entityById = getIdPersistenceHelper().findEntityById(persister, id);
+		T external = fromInternal(entityById);
+		Ref<I> ref = getIdPersistenceHelper().toInternalId(id);
+		setId(external, getIdPersistenceHelper().toExternalId(ref));
+		return external;
 	}
+
+	abstract protected IdPersistenceHelper<ID, I> getIdPersistenceHelper();
 
 	@Override
 	@Transactional(readOnly=true)
@@ -123,19 +118,14 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	@Transactional(readOnly=true)
 	public boolean exists(ID id) {
 		selectNamespace();
-		try {
-			I obj = persister.retrieve(toInternalId(id));
-			return obj != null;
-		} catch (UnknownObjectException e){
-			return false;
-		}
+		return getIdPersistenceHelper().exists(persister,id);
 	}
 
 	@Override
 	@Transactional
 	public void delete(ID id) {
 		selectNamespace();
-		persister.delete(toInternalId(id));
+		persister.delete(getIdPersistenceHelper().toInternalId(id));
 	}
 
 	@Override
@@ -167,7 +157,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 					
 					@Override
 					protected Ref<I> convert(ID internal) {
-						return toInternalId(internal);
+						return getIdPersistenceHelper().toInternalId(internal);
 					}
 				};
 			}

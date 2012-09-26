@@ -20,6 +20,8 @@ import org.springframework.util.Assert;
  */
 public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Ref<T>> {
 
+	private final IdPersistenceHelper<Ref<T>, T> idPersistenceHelper = new RawIdPersistenceHelper<T>();
+
 	public RawFuzzyRepository(Class<T> type) {
 		super(type);
 		Assert.isAssignable(Serializable.class, type, "Items being persisted by Raw repositories must be Serializable. ");
@@ -44,16 +46,6 @@ public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Re
 	}
 
 	@Override
-	protected Ref<T> toInternalId(Ref<T> id) {
-		return id;
-	}
-	
-	@Override
-	protected Ref<T> toExternalId(Ref<T> ref) {
-		return ref;
-	}
-	
-	@Override
 	protected Class<T> getInternalType() {
 		return type;
 	}
@@ -66,5 +58,10 @@ public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Re
 	@Override
 	protected void selectNamespace() {
 		// deliberately empty for Raw
+	}
+
+	@Override
+	protected IdPersistenceHelper<Ref<T>, T> getIdPersistenceHelper() {
+		return idPersistenceHelper;
 	}
 }
