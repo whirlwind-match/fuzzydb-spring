@@ -29,7 +29,7 @@ public class ByNameEnumDefinition implements OptionsSource {
 	public String getName() {
 		return getEnumDef().getName();
 	}
-	
+
 	@Override
 	public int size() {
 		return getEnumDef().size();

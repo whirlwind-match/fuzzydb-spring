@@ -37,22 +37,22 @@ import org.springframework.transaction.support.TransactionTemplate;
 @ContextConfiguration({"classpath:/fuzzy-repository-context.xml"})
 @DirtiesContext
 public class FuzzyRepositoryTest {
-	
-	
+
+
 	private Set<String> toDelete;
-	
+
 	@Autowired
 	private FuzzyRepository<FuzzyItem, String> repo;
-	
+
 	@Autowired
 	private PlatformTransactionManager transactionManager;
-	
-	
+
+
 	@Before
 	public void initTest(){
 		toDelete = new HashSet<String>();
 	}
-	
+
 	@After
 	public void deleteFuzzyItems() {
 		for (String ref : toDelete) {
@@ -64,7 +64,7 @@ public class FuzzyRepositoryTest {
 		}
 	}
 
-	@Test 
+	@Test
 	public void createObjectSucceedInAtTransactionalViaInjectedDataOps(){
 		// the action
 		FuzzyItem matt = createMatt();
@@ -72,15 +72,15 @@ public class FuzzyRepositoryTest {
 
 		// Check a ref got assigned when we saved item
 		assertNotNull(ref);
-		
+
 		{
-			// Retrieve by ref		
+			// Retrieve by ref
 			FuzzyItem result = repo.findOne(ref);
 			// And check ref got assigned, and is not same object
 			assertNotNull(result.getRef());
 			assertNotSame(result, matt);
 		}
-		
+
 		{
 			// Now modify a field
 			matt.setAttr("salary", 21000f);
@@ -90,7 +90,7 @@ public class FuzzyRepositoryTest {
 		}
 
 		{
-			// Retrieve by ref and check newAttribute exists		
+			// Retrieve by ref and check newAttribute exists
 			FuzzyItem result = repo.findOne(ref);
 			// And check ref got assigned, and is not same object
 			assertNotNull(result.getRef());
@@ -98,7 +98,7 @@ public class FuzzyRepositoryTest {
 			assertEquals(21000f, result.getAttr("salary"));
 			assertEquals("Non-smoker", result.getSmoke());
 		}
-		
+
 		{
 			AttributeMatchQuery<FuzzyItem> query = new SubjectMatchQuery<FuzzyItem>(matt, "similarPeople", 10);
 			List<Result<FuzzyItem>> items = doQuery(query);
@@ -109,7 +109,7 @@ public class FuzzyRepositoryTest {
 		}
 	}
 
-	@Test 
+	@Test
 	public void matchesForAPersonAreInOrder(){
 		// the action
 		FuzzyItem matt = createMatt();
@@ -117,9 +117,9 @@ public class FuzzyRepositoryTest {
 
 		// Check a ref got assigned when we saved item
 		assertNotNull(ref);
-		
+
 		createMorePeople();
-		
+
 		{
 			AttributeMatchQuery<FuzzyItem> query = new SubjectMatchQuery<FuzzyItem>(matt, "similarPeople", 10);
 			List<Result<FuzzyItem>> items = doQuery(query);
@@ -136,18 +136,18 @@ public class FuzzyRepositoryTest {
 		Score score = result.getScore();
 		System.out.println("Item: " + result.getItem().toString() + ", score = " + score.total());
 		Collection<String> scoreEntryNames = score.getScoreEntryNames();
-		
+
 		for (String attr : scoreEntryNames) {
 			System.out.println("    " + attr + " : fwd=" + score.getForwardsScore(attr) + ", rev=" + score.getReverseScore(attr));
 		}
 	}
 
 	private List<Result<FuzzyItem>> doQuery(final AttributeMatchQuery<FuzzyItem> query) {
-		
+
 		return new TransactionTemplate(transactionManager).execute(new TransactionCallback<List<Result<FuzzyItem>>>() {
 			@Override
 			public List<Result<FuzzyItem>> doInTransaction(TransactionStatus status) {
-				
+
 				Iterator<Result<FuzzyItem>> items = repo.findMatchesFor(query);
 				return toList(items);
 			}
@@ -156,7 +156,7 @@ public class FuzzyRepositoryTest {
 
 	public static <T> List<T> toList(Iterator<T> items) {
 		assertNotNull(items);
-		
+
 		List<T> list = new LinkedList<T>();
 		for (Iterator<T> iterator = items; iterator.hasNext();) {
 			T item = iterator.next();
@@ -168,7 +168,7 @@ public class FuzzyRepositoryTest {
 
 	/**
 	 * Always use this when saving so that we've got all the refs we need to delete after the test
-	 * @return 
+	 * @return
 	 */
 	private FuzzyItem saveOne(FuzzyItem item) {
 		item = repo.save(item);
@@ -181,7 +181,7 @@ public class FuzzyRepositoryTest {
 		toDelete.add(item.getRef());
 		return item;
 	}
-	
+
 	private FuzzyItem createMatt() {
 		FuzzyItem matt = new FuzzyItem("Matt");
 		matt.setAttr("isMale", Boolean.TRUE);
@@ -194,7 +194,7 @@ public class FuzzyRepositoryTest {
 	}
 
 	private void createMorePeople() {
-		
+
 		FuzzyItem angelina = new FuzzyItem("Angelina");
 		angelina.setAttr("isMale", Boolean.FALSE);
 		angelina.setAttr("age", 35f);

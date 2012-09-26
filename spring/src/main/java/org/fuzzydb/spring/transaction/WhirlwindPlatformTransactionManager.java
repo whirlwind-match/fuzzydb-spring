@@ -21,7 +21,7 @@ public class WhirlwindPlatformTransactionManager extends
 		private Transaction transaction;
 
 		private boolean rollbackOnly = false;
-		
+
 		public TransactionHolder(Transaction currentTransaction) {
 			this.transaction = currentTransaction;
 		}
@@ -37,7 +37,7 @@ public class WhirlwindPlatformTransactionManager extends
 		public void setRollbackOnly() {
 			this.rollbackOnly = true;
 		}
-		
+
 		@Override
 		public boolean isRollbackOnly() {
 			return rollbackOnly;
@@ -49,7 +49,7 @@ public class WhirlwindPlatformTransactionManager extends
 		}
 	}
 
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private final WhirlwindExceptionTranslator exceptionTranslator = new WhirlwindExceptionTranslator();
@@ -67,7 +67,7 @@ public class WhirlwindPlatformTransactionManager extends
 
 	@Override
 	protected Object doGetTransaction() throws TransactionException {
-		return new TransactionHolder(store.currentTransaction()); 
+		return new TransactionHolder(store.currentTransaction());
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class WhirlwindPlatformTransactionManager extends
 				definition.getIsolationLevel() == TransactionDefinition.ISOLATION_DEFAULT,
 				"Whirlwind only supports ISOLATION_DEFAULT");
 
-		
+
 		TransactionHolder th = (TransactionHolder)transaction;
 		Assert.isNull(th.getTransaction());
 		th.setTransaction(store.begin());
@@ -95,13 +95,13 @@ public class WhirlwindPlatformTransactionManager extends
 			else {
 				th.getTransaction().commit();
 			}
-			
+
 			th.setTransaction(null);
 		} catch (ArchException e) {
 			throwTranslatedException(e);
 		}
 	}
-	
+
 	@Override
 	protected boolean isExistingTransaction(Object transaction) throws TransactionException {
 		TransactionHolder th = (TransactionHolder)transaction;

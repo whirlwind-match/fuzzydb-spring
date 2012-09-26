@@ -11,7 +11,7 @@ import org.springframework.data.util.TypeInformation;
 public class FuzzyPersistentEntity<T>  extends BasicPersistentEntity<T, FuzzyProperty> {
 
 	private final LinkedList<FuzzyProperty> derivations = new LinkedList<FuzzyProperty>();
-	
+
 	public FuzzyPersistentEntity(TypeInformation<T> information) {
 		super(information);
 	}
@@ -23,7 +23,7 @@ public class FuzzyPersistentEntity<T>  extends BasicPersistentEntity<T, FuzzyPro
 	public List<FuzzyProperty> getDerivations() {
 		return derivations;
 	}
-	
+
 	@Override
 	public void verify() {
 		super.verify();

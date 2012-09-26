@@ -40,49 +40,49 @@ import org.springframework.data.annotation.Id;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleMappingFuzzyRepositoryTest  {
-	
+
 	private SimpleMappingFuzzyRepository<FuzzyItem> repo;
-	
+
 	@Mock
 	private DataOperations persister;
 
 	private final AttributeDefinitionService attrDefinitionService = new AttrDefinitionMgr();
-	
+
 	// prime the attribute mappings so we know what ids to look for
 	private final int isMaleId = attrDefinitionService.getAttrId("isMale", Boolean.class);
 	private final int ageId = attrDefinitionService.getAttrId("age", Float.class);
 	private final int ageRangeId = attrDefinitionService.getAttrId("ageRange", float[].class);
 	private final int journeyDateId = attrDefinitionService.getAttrId("journeyDate", Date.class);
-	
-	
-	@Captor 
+
+
+	@Captor
 	private ArgumentCaptor<MappedFuzzyItem> wwItemCaptor;
-	
-	
+
+
 	@Before
 	public void injectMocksManually() throws Exception {
 		WhirlwindConversionService converter = new WhirlwindConversionService();
 		new DirectFieldAccessor(converter).setPropertyValue("attrDefinitionService", attrDefinitionService);
 		converter.afterPropertiesSet();
-		
+
 		repo = new SimpleMappingFuzzyRepository<FuzzyItem>(FuzzyItem.class);
 		new DirectFieldAccessor(repo).setPropertyValue("persister", persister);
 		new DirectFieldAccessor(repo).setPropertyValue("attrDefinitionService", attrDefinitionService);
 		new DirectFieldAccessor(repo).setPropertyValue("converter", converter);
 		repo.afterPropertiesSet();
 	}
-	
+
 	@Test
 	public void shouldConvertToWWItemOnSave() {
 		// mocks
 		when(persister.save((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
 		when(persister.getRef((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
-		
-		
+
+
 		// the action
 		FuzzyItem external = new FuzzyItem();
 //		external.ref = "1_2_3";
-		
+
 		external.populateTestData();
 		FuzzyItem result = repo.save(external);
 
@@ -97,29 +97,29 @@ public class SimpleMappingFuzzyRepositoryTest  {
 
 		FloatRangePreference floatPref = (FloatRangePreference) attrs.findAttr(ageRangeId);
 		assertThat(floatPref, equalTo(new FloatRangePreference(ageRangeId, 25f, 30f, 38f)));
-		
+
 		FloatValue journeyDateAttr = (FloatValue) attrs.findAttr(journeyDateId);
 		assertThat(journeyDateAttr, equalTo(new FloatValue(journeyDateId, 9.4348798E11f)));
-		
-		
+
+
 		// Verify id got set in result
 		assertThat(result.ref, equalTo("1_2_3"));
 	}
-	
-	
+
+
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	@Test 
+	@Test
 	public void shouldConvertToMapEntriesOnRetrieve() {
-		
+
 		// mock
 		MappedFuzzyItem internal = getWWItem();
 		when(persister.retrieve((Ref<MappedFuzzyItem>) anyObject())).thenReturn(internal);
 		when(persister.getRef((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
-		
+
 
 		// the action
 		FuzzyItem result = repo.findOne("1_1_1");
-		
+
 		// verify
 		verify(persister, times(1)).retrieve(ArgumentCaptor.forClass(Ref.class).capture());
 		Map<String, Object> map = result.attributes;
@@ -128,8 +128,8 @@ public class SimpleMappingFuzzyRepositoryTest  {
 		assertArrayEquals(new float[]{1.2f, 2.3f, 3.4f}, (float[])map.get("ageRange"), 0f);
 		assertEquals(new Date(99,10,25).getTime(), 943488000000l);
 	}
-	
-	
+
+
 	private MappedFuzzyItem getWWItem() {
 		MappedFuzzyItem item = new MappedFuzzyItem();
 		item.getAttributeMap().putAttr(new BooleanValue(isMaleId, true));
@@ -141,14 +141,14 @@ public class SimpleMappingFuzzyRepositoryTest  {
 
 
 	public static class FuzzyItem implements Serializable {
-		
+
 		private static final long serialVersionUID = 1L;
 
 		@Id
 		String ref;
-		
+
 		Map<String, Object> attributes = new HashMap<String,Object>();
-		
+
 		@SuppressWarnings("deprecation")
 		void populateTestData() {
 			attributes.put("isMale", Boolean.FALSE);

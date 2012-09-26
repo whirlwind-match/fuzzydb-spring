@@ -20,7 +20,7 @@ public class FuzzyMappingContext<E> extends AbstractMappingContext<FuzzyPersiste
 
 		@SuppressWarnings("unchecked")
 		FuzzyPersistentEntity<E> entity = (FuzzyPersistentEntity<E>) new FuzzyPersistentEntity<X>(typeInformation);
-		return entity; 
+		return entity;
 	}
 
 	@Override

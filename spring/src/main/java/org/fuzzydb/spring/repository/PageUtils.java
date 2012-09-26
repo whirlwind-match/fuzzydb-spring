@@ -23,7 +23,7 @@ public abstract class PageUtils {
 			}
 			iterator.next();
 		}
-		
+
 		ArrayList<T> resultsPage = new ArrayList<T>(pageable.getPageSize());
 		for ( ; i < pageStartCount + pageable.getPageSize(); i++) {
 			if (!iterator.hasNext()) {

@@ -20,15 +20,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration({"classpath:/fuzzy-repositories-context.xml"})
 @DirtiesContext
 public class FuzzyRepositoriesConfigTest {
-	
-	
+
+
 	@Autowired
 	private ExampleCrudRepository repo;
-	
-	@Autowired 
+
+	@Autowired
 	private ExampleFuzzyRepository fuzzyRepo;
-	
-	@Test 
+
+	@Test
 	public void repositoryShouldBeCreatedForInterface() {
 		assertTrue( repo instanceof CrudRepository);
 
@@ -40,7 +40,7 @@ public class FuzzyRepositoriesConfigTest {
 		// TODO: assert repo is configured correctly and that proxy behaviour is as expected
 	}
 
-	@Test 
+	@Test
 	public void fuzzyRepositoryShouldBeCreatedForInterface() {
 		assertTrue( fuzzyRepo instanceof FuzzyRepository);
 

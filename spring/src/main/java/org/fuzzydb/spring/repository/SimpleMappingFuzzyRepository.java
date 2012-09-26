@@ -21,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * A simple (PoC) Repository implementation that performs a minimal conversion to get attributes
  * in and out of the database
  *
- * Fuller support will come in time. This is a starting point to get a walking-skeleton 
+ * Fuller support will come in time. This is a starting point to get a walking-skeleton
  * up and err... walking.
- * 
+ *
  * @author Neale Upstone
  *
  * @param <T> the type being stored (Must contain a field: Map<String,Object> attributes for the fuzzy data)
@@ -32,16 +32,16 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 
 	@Autowired
 	private WhirlwindConversionService converter;
-	 
+
 	@Autowired
 	private AttributeDefinitionService attrDefinitionService;
 
 	private FuzzyEntityConverter<T, MappedFuzzyItem> entityConverter;
-	
+
 	private final boolean useDefaultNamespace;
 
 	private final IdPersistenceHelper<String, MappedFuzzyItem> idPersistenceHelper = new RefAsStringIdPersistenceHelper<MappedFuzzyItem>();
-	
+
 	public SimpleMappingFuzzyRepository(Class<T> type) {
 		this(type,false);
 	}
@@ -51,7 +51,7 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 		this.useDefaultNamespace = useDefaultNamespace;
 	}
 
-	public SimpleMappingFuzzyRepository(Class<T> type, boolean useDefaultNamespace, DataOperations persister, 
+	public SimpleMappingFuzzyRepository(Class<T> type, boolean useDefaultNamespace, DataOperations persister,
 			WhirlwindConversionService conversionService, AttributeDefinitionService attributeDefinitionService) {
 		super(type, persister);
 		this.useDefaultNamespace = useDefaultNamespace;
@@ -75,7 +75,7 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 	@Override
 	protected MappedFuzzyItem toInternal(T external) {
 		MappedFuzzyItem result = new MappedFuzzyItem();
-		
+
 		entityConverter.write(external, result);
 
 		return result;
@@ -85,7 +85,7 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 	protected Class<MappedFuzzyItem> getInternalType() {
 		return MappedFuzzyItem.class;
 	}
-	
+
 	@Override
 	protected Iterator<Result<T>> findMatchesInternal(MappedFuzzyItem internal, String matchStyle, int maxResults) {
 		SearchSpec spec = new SearchSpecImpl(MappedFuzzyItem.class, matchStyle);
@@ -97,7 +97,7 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 		Iterator<Result<T>> iterator = new ConvertingIterator<Result<MappedFuzzyItem>,Result<T>>(resultIterator) {
 			@Override
 			protected Result<T> convert(Result<MappedFuzzyItem> internal) {
-				
+
 				MappedFuzzyItem item = internal.getItem();
 				T external = fromInternal(item);
 				Result<T> result = new ResultImpl<T>(external, internal.getScore());
@@ -106,11 +106,11 @@ public class SimpleMappingFuzzyRepository<T> extends AbstractConvertingRepositor
 		};
 		return iterator;
 	}
-	
+
 	@Override
 	protected MappedFuzzyItem merge(MappedFuzzyItem toWrite,
 			Ref<MappedFuzzyItem> existingRef) {
-		
+
 		MappedFuzzyItem existing = getPersister().retrieve(existingRef);
 		existing.mergeFrom(toWrite);
 		return existing;

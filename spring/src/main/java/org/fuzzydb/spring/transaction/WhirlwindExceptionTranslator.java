@@ -18,12 +18,12 @@ public class WhirlwindExceptionTranslator implements
 		if (e == null) {
 			return null;
 		}
-		
+
 		e.initCause(ex);
 		return e;
-		
+
 	}
-	
+
 	protected DataAccessException doTranslate(RuntimeException ex) {
 		if (!(ex instanceof ArchException)) {
 			return null;

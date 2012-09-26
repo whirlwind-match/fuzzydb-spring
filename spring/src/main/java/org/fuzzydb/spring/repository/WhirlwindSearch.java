@@ -16,7 +16,7 @@ public interface WhirlwindSearch<T> {
 	 * in order of highest score first.
 	 */
 	Iterator<Result<T>> findMatchesFor(AttributeMatchQuery<T> query);
-	
+
 	/**
 	 * Find the matches which best fit the given query and return them
 	 * in order of highest score first.

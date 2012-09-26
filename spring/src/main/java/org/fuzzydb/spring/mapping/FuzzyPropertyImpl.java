@@ -15,13 +15,13 @@ import org.springframework.data.mapping.model.SimpleTypeHolder;
 public class FuzzyPropertyImpl extends AnnotationBasedPersistentProperty<FuzzyProperty> implements FuzzyProperty {
 
 	private int attrId = 0;
-	
+
 	private final boolean isFuzzyAttribute;
 
 	private final DerivedField derivedField;
-	
-	
-	
+
+
+
 	public FuzzyPropertyImpl(Field field,
 			PropertyDescriptor propertyDescriptor,
 			FuzzyPersistentEntity<?> owner,
@@ -32,12 +32,12 @@ public class FuzzyPropertyImpl extends AnnotationBasedPersistentProperty<FuzzyPr
 		if (derivedField != null) {
 			owner.addDerivation(this);
 		}
-		
+
 		if (isTransient() || isIdProperty() || isMap() || isEntity() || isAssociation()) {
 			isFuzzyAttribute = false;
 			return;
 		}
-		
+
 		try {
 			attrId = attrDefinitionService.getAttrId(getName());
 		} catch (IllegalStateException e) {
@@ -55,7 +55,7 @@ public class FuzzyPropertyImpl extends AnnotationBasedPersistentProperty<FuzzyPr
 
 		return null; //new Association<SimpleProperty>(this, null);
 	}
-	
+
 	@Override
 	public DerivedField getDerivedField() {
 		return derivedField;
@@ -65,7 +65,7 @@ public class FuzzyPropertyImpl extends AnnotationBasedPersistentProperty<FuzzyPr
 	public boolean isFuzzyAttribute() {
 		return isFuzzyAttribute;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName() + " : " + getType();

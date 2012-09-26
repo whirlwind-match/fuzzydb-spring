@@ -21,11 +21,11 @@ import org.springframework.oxm.Unmarshaller;
 public class RepositoryInitializer<T, ID extends Serializable> implements InitializingBean {
 
 	private static final Logger log = LoggerFactory.getLogger(RepositoryInitializer.class);
-	
+
 	private CrudRepository<T, ID> repo;
-	
+
 	private String resources;
-	
+
 	private Unmarshaller unmarshaller;
 
 
@@ -37,7 +37,7 @@ public class RepositoryInitializer<T, ID extends Serializable> implements Initia
 	/**
 	 * @param resources e.g. classpath*:/initObjects/*.xml
 	 */
-	public void setResources(String resources) { 
+	public void setResources(String resources) {
 		this.resources = resources;
 	}
 
@@ -49,7 +49,7 @@ public class RepositoryInitializer<T, ID extends Serializable> implements Initia
 			@Override
 			protected Closeable process(Resource resource) throws IOException {
 				log.info("Loading objects from: {}", resource.getURL());
-				
+
 				InputStream inputStream = resource.getInputStream();
 				Source source = new StreamSource(inputStream);
 				Object object = unmarshaller.unmarshal(source);
@@ -67,9 +67,9 @@ public class RepositoryInitializer<T, ID extends Serializable> implements Initia
 	private void save(final T object) {
 		repo.save(object);
 	}
-	
+
 	private void save(final ArrayList<T> objects) {
 		repo.save(objects);
 	}
-	
+
 }

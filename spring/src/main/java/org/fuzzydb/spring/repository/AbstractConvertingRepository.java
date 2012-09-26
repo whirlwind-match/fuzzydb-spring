@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 /**
- * 
+ *
  * @author Neale Upstone
  *
  * @param <I> the internal representation
@@ -28,18 +28,18 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> extends AbstractCRUDRepository<I, T, ID> implements WhirlwindSearch<T> {
 
-	
+
 	public AbstractConvertingRepository(Class<T> type) {
 		super(type);
 	}
-	
+
 	public AbstractConvertingRepository(Class<T> type, DataOperations persister) {
 		super(type, persister);
 	}
 
 	/**
 	 * Decode the internal representation (e.g. a binary buffer) to the type for this repository
-	 * 
+	 *
 	 * @param internal raw object that has been retrieved from database
 	 * @return converted type
 	 */
@@ -47,7 +47,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 
 	/**
 	 * Encode the persisted object to its' internal representation.
-	 * 
+	 *
 	 * @param external the object that is being persisted to the database
 	 * @return an object suitable for persisting
 	 */
@@ -56,11 +56,11 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	/**
 	 * [Should be on interface javadoc] If the field annotated with {@link Id} is set, then this is an update, and
 	 * and update is therefore done, otherwise a fresh instance is created.
-	 * 
+	 *
 	 * NOTE: For now, the old object is deleted and it's ref becomes stale.  A new object with new Ref is created.
 	 * (i.e. new {@link Id}).
 	 * <p>
-	 * 
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -71,7 +71,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		I toWrite = toInternal(entity);
 		ID existingRef = getId(entity);
 		if (existingRef != null) {
-			I merged = merge(toWrite, getIdPersistenceHelper().toInternalId(existingRef)); 
+			I merged = merge(toWrite, getIdPersistenceHelper().toInternalId(existingRef));
 			try {
 				persister.update(merged);
 				return entity;
@@ -81,7 +81,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 			}
 		}
 		Ref<I> ref = persister.save(toWrite);
-		
+
 		setId(entity, getIdPersistenceHelper().toExternalId(ref));
 		return entity;
 	}
@@ -90,8 +90,8 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	 * Should do anything needed to merge an existing back in with
 	 * existingRef from the current transaction
 	 */
-	abstract protected I merge(I toWrite, Ref<I> existingId); 
-	
+	abstract protected I merge(I toWrite, Ref<I> existingId);
+
 	@Override
 	@Transactional(readOnly=true)
 	public T findOne(ID id) {
@@ -134,7 +134,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		selectNamespace();
 		persister.delete(toInternal(entity));
 	}
-	
+
 
 	@Override
 	@Transactional(readOnly=true)
@@ -152,16 +152,16 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		Iterable<Ref<I>> iterable = new Iterable<Ref<I>>(){
 			@Override
 			public Iterator<Ref<I>> iterator() {
-				
+
 				return new ConvertingIterator<ID,Ref<I>>(ids.iterator()) {
-					
+
 					@Override
 					protected Ref<I> convert(ID internal) {
 						return getIdPersistenceHelper().toInternalId(internal);
 					}
 				};
 			}
-		};	
+		};
 		Collection<Ref<I>> refs = new ArrayList<Ref<I>>();
 		for (Ref<I> ref : iterable) {
 			refs.add(ref);
@@ -170,7 +170,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		return asExternalIterable(retrieve.values());
 	}
 
-	
+
 	@Override
 	@Transactional(readOnly=true, propagation=Propagation.MANDATORY)
 	public Iterator<Result<T>> findMatchesFor(AttributeMatchQuery<T> query) {
@@ -186,7 +186,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		I internal = toInternal(query.getQueryTarget());
 		Iterator<Result<T>> resultIterator = findMatchesInternal(internal, query.getMatchStyle(), query.getMaxResults());
 		return PageUtils.getPage(resultIterator, pageable);
-		
+
 	}
 
 	protected Iterable<T> asExternalIterable(final Iterable<I> all) {
@@ -195,7 +195,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 			@Override
 			public Iterator<T> iterator() {
 				return new ConvertingIterator<I,T>(all.iterator()) {
-					
+
 					@Override
 					protected T convert(I internal) {
 						return fromInternal(internal);

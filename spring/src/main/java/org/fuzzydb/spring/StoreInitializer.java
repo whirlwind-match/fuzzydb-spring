@@ -33,38 +33,38 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
  * <p>
  * Future support will allow different fuzzy indexes configurations
  * within the same store.
- * 
+ *
  * @author Neale Upstone
  *
  */
 public class StoreInitializer implements InitializingBean {
 
-	
+
 	static private final Logger log = LogFactory.getLogger(StoreInitializer.class);
-	
+
 	private final String autoResourceBase = "classpath*:/fuzzy/";
-	
+
 	private Store store;
-	
+
 //	@Autowired
 //	@Qualifier("resource")
 	private String /* TODO: Resource */ resourcePath;
-	
-	
+
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// FIXME: Remove everything to do with the next 3 lines!
         JVMAppListener.getInstance().setSingleSession();
         JVMAppListener.getInstance().preRequest();
 //        IndexerFactory.setCurrentStoreUrl("wwmdb:/" + store.getStoreName()); // TODO: Should be able to ask store for it's URL... ?
-        
+
         // Init by convention for now
         DynamicRef<? extends AttributeDefinitionService> attrDefs = SyncedAttrDefinitionMgr.getInstance(store);
         @SuppressWarnings("unused")
 		Map<String, Object> loadAttributeDefs = XStreamHelper.loadAttributeDefs(autoResourceBase + "attributes/*.xml", attrDefs);
-        
+
         TreeMap<String, EnumDefinition> loadEnumDefs = XStreamHelper.loadEnumDefs(autoResourceBase + "enums/*.xml", attrDefs);
-        
+
         for (Entry<String, EnumDefinition> def : loadEnumDefs.entrySet()) {
         	// recreate with ADS
 			EnumDefinition value = def.getValue();
@@ -72,7 +72,7 @@ public class StoreInitializer implements InitializingBean {
 			ArrayList<String> values = def.getValue().getValues();
 			newDef.getMultiEnum(values.toArray(new String[values.size()]), -1);
 		}
-        
+
 
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         if (resourcePath == null) {
@@ -90,7 +90,7 @@ public class StoreInitializer implements InitializingBean {
 	public void setStore(@Nonnull Store store) {
 		this.store = store;
 	}
-	
+
 	public void setResource(@Nullable String resource) {
 		this.resourcePath = resource;
 	}

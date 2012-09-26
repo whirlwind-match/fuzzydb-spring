@@ -15,7 +15,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
- 
+
 public class FuzzyStoreConfigParser extends AbstractBeanDefinitionParser {
 
 
@@ -27,8 +27,8 @@ public class FuzzyStoreConfigParser extends AbstractBeanDefinitionParser {
 		}
 		return id;
 	}
-	
-	/* 
+
+	/*
 	 * Aiming for this
 	 * 	<bean id="clientFactory" class="org.fuzzydb.client.EmbeddedClientFactory"
 		factory-method="getInstance" />
@@ -41,12 +41,12 @@ public class FuzzyStoreConfigParser extends AbstractBeanDefinitionParser {
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
 
 		String persistAttribute = element.getAttribute("persistent");
-		
+
 		// Need to create the embedded client factory if we want embedded
 	    BeanDefinitionBuilder embeddedFactoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(EmbeddedClientFactory.class)
 	    		.setFactoryMethod("getInstance").addPropertyValue("persistent", persistAttribute);
 
-	    String clientFactoryRef = registerWithGeneratedName(embeddedFactoryBuilder.getBeanDefinition(), parserContext.getRegistry());      
+	    String clientFactoryRef = registerWithGeneratedName(embeddedFactoryBuilder.getBeanDefinition(), parserContext.getRegistry());
 
 	    String storeUrl = element.getAttribute("url");
 	    if (!StringUtils.hasText(storeUrl)) {

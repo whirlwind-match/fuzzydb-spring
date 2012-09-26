@@ -20,11 +20,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 
 public class TransactionTemplateTest extends BaseDatabaseTest {
-	
 
-	@Test 
+
+	@Test
 	public void objectCreatedInTransactionTemplateIsFoundInDatabase() {
-		
+
 		final WhirlwindPlatformTransactionManager tm = new WhirlwindPlatformTransactionManager(store);
 
 		Ref<TestIndexClass> ref = new TransactionTemplate(tm).execute(new TransactionCallback<Ref<TestIndexClass>>() {
@@ -33,24 +33,24 @@ public class TransactionTemplateTest extends BaseDatabaseTest {
 				return tm.getDataOps().create(new TestIndexClass(1));
 			}
 		});
-		
-		
+
+
 		// OLD STYLE - heck, could use @Transactional :)
 
 		Transaction t = store.getAuthStore().begin();
 		TestIndexClass retrieved = t.retrieve(TestIndexClass.class, "a", 1);
-		
+
 		assertEquals(1, retrieved.a);
 		assertEquals(ref, t.getRef(retrieved));
 		assertEquals(1, t.getVersion(retrieved));
-		
+
 		t.dispose();
 
 	}
-	
-	@Test 
+
+	@Test
 	public void transactionShouldRollbackOnException() {
-		
+
 		final WhirlwindPlatformTransactionManager tm = new WhirlwindPlatformTransactionManager(store);
 
 		try {
@@ -59,15 +59,15 @@ public class TransactionTemplateTest extends BaseDatabaseTest {
 		} catch (Exception e) {
 			Assert.assertThat(e.getMessage(), CoreMatchers.equalTo("Deliberate exception. Should cause rollback"));
 		}
-		
-		
+
+
 		// OLD STYLE - heck, could use @Transactional :)
 
 		Transaction t = store.getAuthStore().begin();
 		TestIndexClass retrieved = t.retrieve(TestIndexClass.class, "a", 1);
-		
+
 		assertThat(retrieved, nullValue());
-		
+
 		t.dispose();
 
 	}

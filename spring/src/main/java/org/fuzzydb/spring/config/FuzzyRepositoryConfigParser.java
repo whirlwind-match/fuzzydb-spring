@@ -14,7 +14,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
- 
+
 public class FuzzyRepositoryConfigParser extends AbstractBeanDefinitionParser {
 
 
@@ -27,8 +27,8 @@ public class FuzzyRepositoryConfigParser extends AbstractBeanDefinitionParser {
 		}
 		return id;
 	}
-	
-	/* 
+
+	/*
 	 * Aiming for this
 	 * 	<bean id="attributeDefinitionService" class="org.fuzzydb.attrs.internal.CurrentTxAttrDefinitionMgr"/>
 
@@ -40,14 +40,14 @@ public class FuzzyRepositoryConfigParser extends AbstractBeanDefinitionParser {
 	 */
 	@Override
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-		
+
 		FuzzyRepositorySupport.registerFuzzySupportBeans(parserContext.getRegistry());
-	    
+
 	    // Build the repository for class
 	    String persistedClass = element.getAttribute("class");
-	    
+
 	    String useDefaultNamespace = element.getAttribute("useDefaultNamespace");
-	    
+
 	    BeanDefinitionBuilder repositoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(SimpleMappingFuzzyRepository.class);
 	    repositoryBuilder.addConstructorArgValue(persistedClass);
 	    repositoryBuilder.addConstructorArgValue( useDefaultNamespace.equals("true") );

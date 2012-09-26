@@ -8,16 +8,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 public class NativeWhirlwindServiceImpl {
-	
+
 	@Autowired
 	@Qualifier("org.fuzzydb.DefaultStore")
 	private DataOperations dataOperations;
 
-	@Transactional 
+	@Transactional
 	public Ref<IndexedMap> insertSomething(IndexedMap item) {
 		return dataOperations.create(item);
 	}
-	
+
 	@Transactional(readOnly=true)
 	public <T> T retrieveByRef(Ref<T> ref) {
 		return dataOperations.retrieve(ref);

@@ -93,8 +93,8 @@ public class RepositoryInitializerTest {
 		assertThat(two.getEmail(), is("two@two.com"));
 	}
 
-	
-	
+
+
 	public void exportItems() throws IOException {
 		XStream xs = new XStream();
 		xs.aliasType("items", ArrayList.class);

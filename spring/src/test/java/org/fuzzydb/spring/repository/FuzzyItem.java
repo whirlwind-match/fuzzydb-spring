@@ -10,28 +10,28 @@ import org.springframework.data.annotation.Persistent;
 
 @Persistent
 public class FuzzyItem implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private String description;
-	
+
 	private final Map<String, Object> attributes = new HashMap<String,Object>();
-	
+
 	@Id
 	private String ref;
 
 	private String[] newspapers;
-	
+
 	private String smoke;
-	
+
 	private Date journeyDate;
-	
+
 	/**
 	 * Public constructor needed by some frameworks
 	 */
 	public FuzzyItem() {
 	}
-	
+
 	public FuzzyItem(String desc) {
 		this.description = desc;
 	}
@@ -39,31 +39,31 @@ public class FuzzyItem implements Serializable {
 	public Object getAttr(String name) {
 		return attributes.get(name);
 	}
-	
+
 	public void setAttr(String name, Object value) {
 		attributes.put(name, value);
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public Date getJourneyDate() {
 		return journeyDate;
 	}
-	
+
 	public void setJourneyDate(Date journeyDate) {
 		this.journeyDate = journeyDate;
 	}
-	
+
 	public String[] getNewspapers() {
 		return newspapers;
 	}
-	
+
 	public void setNewspapers(String[] newspapers) {
 		this.newspapers = newspapers;
 	}
-	
+
 	public String getSmoke() {
 		return smoke;
 	}
@@ -75,7 +75,7 @@ public class FuzzyItem implements Serializable {
 	public String getRef() {
 		return ref;
 	}
-	
+
 	@Override
 	public String toString() {
 		return description;

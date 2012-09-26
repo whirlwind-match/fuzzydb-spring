@@ -20,7 +20,7 @@ public class FuzzyRepositoryConfigurationExtension extends RepositoryConfigurati
     protected String getModulePrefix() {
     	return "fuzzy";
     }
-    
+
     @Override
 	public String getRepositoryFactoryClassName() {
 		return FuzzyRepositoryFactoryBean.class.getName();
@@ -47,7 +47,7 @@ public class FuzzyRepositoryConfigurationExtension extends RepositoryConfigurati
                             .getBeanDefinition();
             registerWithSourceAndGeneratedBeanName(registry, definition, source);
 		}
-	
+
         if (!hasBean(CurrentTxAttrDefinitionMgr.class, registry)) {
             AbstractBeanDefinition definition =
                     BeanDefinitionBuilder
@@ -56,8 +56,8 @@ public class FuzzyRepositoryConfigurationExtension extends RepositoryConfigurati
             registerWithSourceAndGeneratedBeanName(registry, definition, source);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void postProcess(BeanDefinitionBuilder builder, AnnotationRepositoryConfigurationSource config) {
 		super.postProcess(builder, config);
@@ -65,7 +65,7 @@ public class FuzzyRepositoryConfigurationExtension extends RepositoryConfigurati
 		// Do something with our context...
 	}
 
-	
+
 	@Override
 	public void postProcess(BeanDefinitionBuilder builder,
 			XmlRepositoryConfigurationSource config) {

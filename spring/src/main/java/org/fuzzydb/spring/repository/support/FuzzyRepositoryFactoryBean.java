@@ -17,13 +17,13 @@ public class FuzzyRepositoryFactoryBean<T extends CrudRepository<S, ID>, S, ID e
 
 	@Autowired
 	private DataOperations persister;
-	
+
 	@Autowired
 	private AttributeDefinitionService attributeDefinitionService;
-	
+
 	@Autowired
 	private WhirlwindConversionService conversionService;
-	
+
 
     @Override
     protected RepositoryFactorySupport doCreateRepositoryFactory() {

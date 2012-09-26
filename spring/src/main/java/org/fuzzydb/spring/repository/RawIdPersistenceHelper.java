@@ -19,10 +19,10 @@ public class RawIdPersistenceHelper<I> implements IdPersistenceHelper<org.fuzzyd
 	public Ref<I> toInternalId(Ref<I> id) {
 		return id;
 	}
-	
+
 	@Override
 	public Ref<I> toExternalId(Ref<I> id) {
 		return id;
 	}
-	
+
 }

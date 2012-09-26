@@ -9,7 +9,7 @@ import org.springframework.data.repository.core.support.AbstractEntityInformatio
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 
-public class FuzzyEntityInformation<T, ID extends Serializable> 
+public class FuzzyEntityInformation<T, ID extends Serializable>
 	extends AbstractEntityInformation<T, ID> {
 
 	protected Field idField;

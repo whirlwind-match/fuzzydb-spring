@@ -7,7 +7,7 @@ import org.springframework.data.repository.config.RepositoryConfigurationExtensi
 
 /**
  * {@link NamespaceHandler} for FuzzyDB
- * 
+ *
  * @author Neale Upstone
  */
 public class FuzzyNamespaceHandler extends NamespaceHandlerSupport {
@@ -20,7 +20,7 @@ public class FuzzyNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionParser("initialize", new FuzzyInitializeConfigParser());
 		registerBeanDefinitionParser("tx-manager", new FuzzyTxManagerConfigParser());
 		registerBeanDefinitionParser("repository", new FuzzyRepositoryConfigParser());
-		
+
         RepositoryConfigurationExtension extension = new FuzzyRepositoryConfigurationExtension();
     	RepositoryBeanDefinitionParser repositoryBeanDefinitionParser = new RepositoryBeanDefinitionParser(extension);
 

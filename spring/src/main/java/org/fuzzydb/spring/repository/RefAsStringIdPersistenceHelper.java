@@ -12,7 +12,7 @@ public final class RefAsStringIdPersistenceHelper<I> implements
 	public boolean exists(DataOperations persister, String id) {
 		return findEntityById(persister, id) != null;
 	}
-	
+
 	@Override
 	public I findEntityById(DataOperations persister, String id) {
 		Ref<I> ref = toInternalId(id);

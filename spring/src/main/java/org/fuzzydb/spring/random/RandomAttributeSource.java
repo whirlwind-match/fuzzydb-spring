@@ -20,26 +20,26 @@ public class RandomAttributeSource {
 
 	@Autowired
 	private AttributeDefinitionService attributeService;
-	
+
 	/**
 	 * Default random generators to use based on the attribute class
 	 */
 	private final Map<Class<?>, RandomGenerator<?>> classRandomisers = new HashMap<Class<?>, RandomGenerator<?>>();
 
 	private final Map<String, RandomGenerator<?>> attrRandomisers = new HashMap<String, RandomGenerator<?>>();
-	
-	
+
+
 	public RandomAttributeSource() {
 		classRandomisers.put(Boolean.class, new RandomBoolean(50, 50));
 	}
-	
-	
+
+
 	public Attribute<?> getRandom(String attrName) {
 		Attribute<?> attr = getConfiguredRandom(attrName);
 		if (attr != null) {
 			return attr;
 		}
-		
+
 		Class<?> attrClass = attributeService.getExternalClass(attributeService.getAttrId(attrName));
 		RandomGenerator<?> generator = classRandomisers.get(attrClass);
 		return generator == null ? null : generator.next(attrName);
@@ -68,8 +68,8 @@ public class RandomAttributeSource {
 	public void configureUuidAttr(String attrName) {
 		attrRandomisers.put(attrName, new RandomUuid());
 	}
-	
-	/** 
+
+	/**
 	 * Get lazy variant as it involves database access which we don't want to do while reading configuration.
 	 * Only when generating data in a transaction should we need database access */
 	private ByNameEnumDefinition getLazyEnumDef(String attrName) {

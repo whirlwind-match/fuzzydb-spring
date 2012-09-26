@@ -31,7 +31,7 @@ import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 /**
  * Annotation to activate fuzzydb repositories. If no base package is configured through either {@link #value()},
  * {@link #basePackages()} or {@link #basePackageClasses()} it will trigger scanning of the package of annotated class.
- * 
+ *
  * @author Oliver Gierke (original spring-data-mongo implementation)
  * @author Neale Upstone (tweaks for fuzzydb)
  */
@@ -76,7 +76,7 @@ public @interface EnableFuzzyRepositories {
 	 * Returns the postfix to be used when looking up custom repository implementations. Defaults to {@literal Impl}. So
 	 * for a repository named {@code PersonRepository} the corresponding implementation class will be looked up scanning
 	 * for {@code PersonRepositoryImpl}.
-	 * 
+	 *
 	 * @return
 	 */
 	String repositoryImplementationPostfix() default "";
@@ -84,7 +84,7 @@ public @interface EnableFuzzyRepositories {
 	/**
 	 * Configures the location of where to find the Spring Data named queries properties file. Will default to
 	 * {@code META-INFO/fuzzy-named-queries.properties}.
-	 * 
+	 *
 	 * @return
 	 */
 	String namedQueriesLocation() default "";
@@ -92,7 +92,7 @@ public @interface EnableFuzzyRepositories {
 	/**
 	 * Returns the key of the {@link QueryLookupStrategy} to be used for lookup queries for query methods. Defaults to
 	 * {@link Key#CREATE_IF_NOT_FOUND}.
-	 * 
+	 *
 	 * @return
 	 */
 	Key queryLookupStrategy() default Key.CREATE_IF_NOT_FOUND;
@@ -100,7 +100,7 @@ public @interface EnableFuzzyRepositories {
 	/**
 	 * Returns the {@link FactoryBean} class to be used for each repository instance. Defaults to
 	 * {@link MongoRepositoryFactoryBean}.
-	 * 
+	 *
 	 * @return
 	 */
 	Class<?> repositoryFactoryBeanClass() default FuzzyRepositoryFactoryBean.class;

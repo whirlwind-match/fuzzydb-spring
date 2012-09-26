@@ -21,7 +21,7 @@ public abstract class ConvertingIterator<FROM,TO> implements Iterator<TO> {
 		TO result = convert(resultInternal);
 		return result;
 	}
-	
+
 	abstract protected TO convert(FROM internal);
 
 	@Override

@@ -11,7 +11,7 @@ import org.springframework.core.convert.converter.Converter;
  * Marks a field as derived from another field using an appropriate Spring {@link Converter}.
  * <p>
  * The derivation will only be used if the field is null once the entity has been materialised.
- * 
+ *
  * @author Neale Upstone
  *
  */
@@ -20,7 +20,7 @@ import org.springframework.core.convert.converter.Converter;
 public @interface DerivedField {
 
 	/**
-	 * The field from which to convert 
+	 * The field from which to convert
 	 */
 	String value();
 

@@ -18,7 +18,7 @@ public class RawCRUDRepository<T,ID extends Serializable & Comparable<ID>> exten
 		super(type, persister);
 		Assert.isAssignable(Serializable.class, type, "Items being persisted by Raw repositories must be Serializable. ");
 	}
-	
+
 	@Override
 	@Transactional
 	public void delete(ID id) {

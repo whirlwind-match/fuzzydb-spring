@@ -25,12 +25,12 @@ public abstract class AbstractCRUDRepository<I, T, ID extends Serializable> impl
 
 	@Autowired
 	protected DataOperations persister;
-	
+
 	protected final Class<T> type;
-	
+
 	protected Field idField;
 
-	
+
 	public AbstractCRUDRepository(Class<T> type) {
 		this.type = type;
 	}
@@ -45,7 +45,7 @@ public abstract class AbstractCRUDRepository<I, T, ID extends Serializable> impl
 	 */
 	@Override
 	public void afterPropertiesSet() {
-		
+
 		ReflectionUtils.doWithFields(type, new FieldCallback() {
 			@Override
 			public void doWith(Field field) throws IllegalArgumentException,
@@ -115,7 +115,7 @@ public abstract class AbstractCRUDRepository<I, T, ID extends Serializable> impl
 	@Override
 	@Transactional
 	public <S extends T> Iterable<S> save(Iterable<S> entities) {
-	
+
 		for (S entity : entities) {
 			save(entity);
 		}
@@ -141,17 +141,17 @@ public abstract class AbstractCRUDRepository<I, T, ID extends Serializable> impl
 	@Override
 	public Page<T> findAll(Pageable pageable) {
 		// Not scaleable!
-		
+
 		Iterable<T> results = findAll();
-		Iterator<T> iterator = results.iterator(); 
-		
+		Iterator<T> iterator = results.iterator();
+
 		return PageUtils.getPage(iterator, pageable);
 	}
-	
-	
+
+
 	final protected void assertValidTypeForRepository(Object entity) {
 		if (!type.isInstance(entity)) {
-			throw new IllegalStateException(entity.getClass().getCanonicalName() 
+			throw new IllegalStateException(entity.getClass().getCanonicalName()
 					+ " cannot be inserted into repository expecting " + type.getCanonicalName());
 		}
 	}

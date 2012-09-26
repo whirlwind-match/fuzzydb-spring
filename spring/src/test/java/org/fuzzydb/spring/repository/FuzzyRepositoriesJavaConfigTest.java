@@ -44,14 +44,14 @@ public class FuzzyRepositoriesJavaConfigTest {
             return new WhirlwindPlatformTransactionManager(store());
         }
     }
-	
+
 	@Autowired
 	private ExampleCrudRepository repo;
-	
-	@Autowired 
+
+	@Autowired
 	private ExampleFuzzyRepository fuzzyRepo;
-	
-	@Test 
+
+	@Test
 	public void repositoryShouldBeCreatedForInterface() {
 		assertTrue( repo instanceof CrudRepository);
 
@@ -63,7 +63,7 @@ public class FuzzyRepositoriesJavaConfigTest {
 		// TODO: assert repo is configured correctly and that proxy behaviour is as expected
 	}
 
-	@Test 
+	@Test
 	public void fuzzyRepositoryShouldBeCreatedForInterface() {
 		assertTrue( fuzzyRepo instanceof FuzzyRepository);
 
