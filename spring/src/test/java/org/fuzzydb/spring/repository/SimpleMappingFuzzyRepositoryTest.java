@@ -65,10 +65,7 @@ public class SimpleMappingFuzzyRepositoryTest  {
 		new DirectFieldAccessor(converter).setPropertyValue("attrDefinitionService", attrDefinitionService);
 		converter.afterPropertiesSet();
 
-		repo = new SimpleMappingFuzzyRepository<FuzzyItem>(FuzzyItem.class);
-		new DirectFieldAccessor(repo).setPropertyValue("persister", persister);
-		new DirectFieldAccessor(repo).setPropertyValue("attrDefinitionService", attrDefinitionService);
-		new DirectFieldAccessor(repo).setPropertyValue("converter", converter);
+		repo = new SimpleMappingFuzzyRepository<FuzzyItem>(FuzzyItem.class, false, persister, converter, attrDefinitionService);
 		repo.afterPropertiesSet();
 	}
 

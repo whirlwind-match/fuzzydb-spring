@@ -110,7 +110,8 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	@Transactional(readOnly=true)
 	public T findFirst() {
 		selectNamespace();
-		I internalResult = persister.retrieveFirstOf(getInternalType());
+		@SuppressWarnings("unchecked")
+		I internalResult = persister.retrieveFirstOf((Class<I>)getInternalType());
 		return internalResult == null ? null : fromInternal(internalResult);
 	}
 
@@ -140,7 +141,8 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	@Transactional(readOnly=true)
 	public Iterable<T> findAll() {
 		selectNamespace();
-		final ResultSet<I> all = persister.query(getInternalType(), null, null);
+		@SuppressWarnings("unchecked")
+		final ResultSet<I> all = persister.query((Class<I>)getInternalType(), null, null);
 		return asExternalIterable(all);
 	}
 

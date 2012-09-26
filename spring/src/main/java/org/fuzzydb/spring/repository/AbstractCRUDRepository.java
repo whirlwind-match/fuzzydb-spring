@@ -88,7 +88,7 @@ public abstract class AbstractCRUDRepository<I, T, ID extends Serializable> impl
 	 */
 	abstract protected void selectNamespace();
 
-	abstract protected Class<I> getInternalType();
+	abstract protected Class<? extends I> getInternalType();
 
 
 	protected void setId(T entity, ID ref) {
