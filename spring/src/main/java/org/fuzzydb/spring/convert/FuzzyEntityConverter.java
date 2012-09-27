@@ -8,6 +8,7 @@ import org.fuzzydb.attrs.AttributeDefinitionService;
 import org.fuzzydb.attrs.converters.WhirlwindConversionService;
 import org.fuzzydb.attrs.enums.EnumExclusiveValue;
 import org.fuzzydb.attrs.enums.EnumMultipleValue;
+import org.fuzzydb.attrs.userobjects.IdFieldMappedFuzzyItem;
 import org.fuzzydb.attrs.userobjects.MappedFuzzyItem;
 import org.fuzzydb.attrs.userobjects.MappedItem;
 import org.fuzzydb.client.DataOperations;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.convert.EntityConverter;
 import org.springframework.data.convert.ReflectionEntityInstantiator;
 import org.springframework.data.mapping.PersistentProperty;
@@ -34,8 +36,10 @@ import org.springframework.util.Assert;
 
 /**
  * Maps an entity to a {@link MappedFuzzyItem} by mapping fuzzy attributes (floats, enums etc) to the fuzzy attributes
- * and undefined attributes to {@link MappedFuzzyItem#setNonIndexString(String, String)}
-
+ * and undefined attributes to {@link MappedFuzzyItem#setNonIndexString(String, String)} <p>
+ *
+ * Also handles mapping of {@link Id} annotated fields as appropriate
+ *
  * @author Neale Upstone
  *
  * @param <E>
@@ -79,8 +83,7 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 			setProperty(wrapper, persistentEntity, entry.getKey(), entry.getValue());
 		}
 
-		String value = toExternalId(persister.getRef(source));
-		setProperty(wrapper, persistentEntity.getIdProperty(), value);
+		setEntityId(persistentEntity, source, wrapper);
 
 		applyDerivations(persistentEntity, wrapper);
 
@@ -126,7 +129,7 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 	}
 
 	@Override
-	public void write(E source, final I sink) {
+	public void write(final E source, final I sink) {
 		FuzzyPersistentEntity<E> persistentEntity = mappingContext.getPersistentEntity(source.getClass());
 
 		final BeanWrapper<FuzzyPersistentEntity<E>, E> wrapper = BeanWrapper.create(source, converter);
@@ -147,8 +150,9 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 					return;
 
 				if (persistentProperty.isIdProperty()) {
-					// currently dealt with by merge() - TODO Need to look at whether we need to deal with ID at this level
-//					toInternalId(value);
+					if (sink instanceof IdFieldMappedFuzzyItem) {
+						((IdFieldMappedFuzzyItem) sink).setId((Comparable<?>) value);
+					}
 				}
 
 				else if (persistentProperty.isMap() && persistentProperty.getComponentType().equals(String.class)) {
@@ -203,7 +207,7 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 			}
 
 			Object targetValue = converter.convert(sourceValue, targetProperty.getType());
-			setProperty(wrapper, targetProperty, targetValue);
+			wrapper.setProperty(targetProperty,  targetValue);
 		}
 	}
 
@@ -285,13 +289,6 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 			log.debug("Can't map property {} as no target found on type {}", propertyName, entity.getType());
 			return;
 		}
-		setProperty(wrapper, property, value);
-	}
-
-	protected void setProperty(
-			final BeanWrapper<FuzzyPersistentEntity<E>, E> wrapper,
-			PersistentProperty<?> property, Object value) {
-
 		wrapper.setProperty(property,  value);
 	}
 
@@ -300,9 +297,16 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 		return RefImpl.valueOf(id);
 	}
 
-	protected String toExternalId(Ref<I> ref) {
-		return ((RefImpl<I>) ref).asString();
+	private void setEntityId(FuzzyPersistentEntity<E> persistentEntity,	final I source,
+			final BeanWrapper<FuzzyPersistentEntity<E>, E> wrapper) {
+		
+		Object id;
+		if (source instanceof IdFieldMappedFuzzyItem) {
+			id = ((IdFieldMappedFuzzyItem) source).getId();
+		}
+		else {
+			id = ((RefImpl<I>) persister.getRef(source)).asString();
+		}
+		wrapper.setProperty(persistentEntity.getIdProperty(),  id);
 	}
-
-
 }
