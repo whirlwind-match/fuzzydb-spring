@@ -16,6 +16,7 @@ import org.fuzzydb.spring.examples.ExampleFuzzyRepository;
 import org.fuzzydb.spring.examples.ObjectIdIndexedFuzzyRepository;
 import org.fuzzydb.spring.repository.support.EnableFuzzyRepositories;
 import org.fuzzydb.spring.transaction.WhirlwindPlatformTransactionManager;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,7 @@ public class FuzzyRepositoriesJavaConfigTest {
 	}
 
 	@Test
+	@Ignore("WIP")
 	public void shouldBeAbleToRetrieveByObjectId() {
 		assertTrue( objectIdRepo instanceof FuzzyRepository);
 

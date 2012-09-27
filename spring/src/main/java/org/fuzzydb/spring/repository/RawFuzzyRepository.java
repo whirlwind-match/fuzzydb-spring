@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
  */
 public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Ref<T>> {
 
-	private final IdPersistenceHelper<Ref<T>, T> idPersistenceHelper = new RawIdPersistenceHelper<T>();
+	private final IdPersistenceHelper<Ref<T>, T> idPersistenceHelper = new RawIdPersistenceHelper<T>(persister);
 
 	public RawFuzzyRepository(Class<T> type) {
 		super(type);

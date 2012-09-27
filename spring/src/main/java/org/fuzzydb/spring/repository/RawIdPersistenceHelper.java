@@ -1,8 +1,15 @@
 package org.fuzzydb.spring.repository;
 
+import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
 
 public class RawIdPersistenceHelper<I> implements IdPersistenceHelper<org.fuzzydb.client.Ref<I>, I> {
+
+	private DataOperations persister;
+
+	public RawIdPersistenceHelper(DataOperations persister) {
+		this.persister = persister;
+	}
 
 	@Override
 	public boolean exists(Ref<I> id) {
