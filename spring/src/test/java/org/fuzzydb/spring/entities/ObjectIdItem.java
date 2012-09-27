@@ -19,7 +19,7 @@ public class ObjectIdItem implements Serializable {
 	private final Map<String, Object> attributes = new HashMap<String,Object>();
 
 	@Id
-	private ObjectId id = ObjectId.get();
+	private final ObjectId id = ObjectId.get();
 
 	private String[] newspapers;
 
@@ -47,6 +47,10 @@ public class ObjectIdItem implements Serializable {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Date getJourneyDate() {

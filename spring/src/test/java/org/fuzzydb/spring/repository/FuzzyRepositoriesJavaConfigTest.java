@@ -1,12 +1,12 @@
 package org.fuzzydb.spring.repository;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
-
 import org.bson.types.ObjectId;
 import org.fuzzydb.client.Store;
 import org.fuzzydb.server.EmbeddedClientFactory;
@@ -89,5 +89,12 @@ public class FuzzyRepositoriesJavaConfigTest {
 
 		ObjectIdItem retrieved = objectIdRepo.findOne(id);
 		assertNotNull(retrieved);
+
+		retrieved.setDescription("new description");
+		ObjectId id2 = objectIdRepo.save(retrieved).getId();
+		assertEquals("id should be same when updating existing object", id, id2);
+
+		ObjectIdItem retrieved2 = objectIdRepo.findOne(id);
+		assertThat(retrieved2.getDescription(), is("new description"));
 	}
 }
