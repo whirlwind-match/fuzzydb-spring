@@ -51,11 +51,6 @@ public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Re
 	}
 
 	@Override
-	protected T merge(T toWrite, org.fuzzydb.client.Ref<T> existingRef) {
-		return toWrite;
-	}
-
-	@Override
 	protected void selectNamespace() {
 		// deliberately empty for Raw
 	}

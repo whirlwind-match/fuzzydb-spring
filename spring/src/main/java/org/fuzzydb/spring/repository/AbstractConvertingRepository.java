@@ -69,28 +69,33 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		assertValidTypeForRepository(entity);
 		selectNamespace();
 		I toWrite = toInternal(entity);
-		ID existingRef = getId(entity);
-		if (existingRef != null) {
-			I merged = merge(toWrite, getIdPersistenceHelper().toInternalId(existingRef));
-			try {
-				persister.update(merged);
-				return entity;
-			} catch (UnknownObjectException e) {
-				log.warn("save() - update of detached entity detected, with no merge support so doing delete/create instead on {}", existingRef);
-				persister.delete(existingRef);
-			}
-		}
-		Ref<I> ref = persister.save(toWrite);
-
-		setId(entity, getIdPersistenceHelper().toExternalId(ref));
+		saveOrUpdate(entity, toWrite);
 		return entity;
 	}
 
-	/**
-	 * Should do anything needed to merge an existing back in with
-	 * existingRef from the current transaction
-	 */
-	abstract protected I merge(I toWrite, Ref<I> existingId);
+	private <S extends T> void saveOrUpdate(S entity, I internalEntity) {
+		ID existingRef = getId(entity);
+		if (existingRef != null) { // already supplied, so either insert with ID or is merge
+			I merged = getIdPersistenceHelper().merge(internalEntity, existingRef);
+			try {
+				persister.update(merged);
+				return;
+			} catch (UnknownObjectException e) {
+				deleteIfPossible(existingRef);
+			}
+		}
+		Ref<I> ref = persister.save(internalEntity);
+		setId(entity, getIdPersistenceHelper().toExternalId(ref));
+	}
+
+	private void deleteIfPossible(ID existingRef) {
+		log.warn("save() - update of detached entity detected, with no merge support so doing delete/create instead on {}", existingRef);
+		try {
+			persister.delete(existingRef);
+		} catch (UnknownObjectException e) {
+			log.debug("Nothing deleted.");
+		}
+	}
 
 	@Override
 	@Transactional(readOnly=true)

@@ -31,4 +31,8 @@ public class RawIdPersistenceHelper<I> implements IdPersistenceHelper<org.fuzzyd
 		return id;
 	}
 
+	@Override
+	public I merge(I entity, Ref<I> id) {
+		return entity;
+	}
 }

@@ -19,7 +19,7 @@ public class ObjectIdItem implements Serializable {
 	private final Map<String, Object> attributes = new HashMap<String,Object>();
 
 	@Id
-	private ObjectId id;
+	private ObjectId id = ObjectId.get();
 
 	private String[] newspapers;
 

@@ -1,11 +1,12 @@
 package org.fuzzydb.spring.repository;
 
+import org.fuzzydb.attrs.userobjects.MappedItem;
 import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
 import org.fuzzydb.client.exceptions.UnknownObjectException;
 import org.fuzzydb.client.internal.RefImpl;
 
-public final class RefAsStringIdPersistenceHelper<I> implements
+public final class RefAsStringIdPersistenceHelper<I extends MappedItem> implements
 		IdPersistenceHelper<String, I> {
 
 
@@ -42,5 +43,13 @@ public final class RefAsStringIdPersistenceHelper<I> implements
 	@Override
 	public String toExternalId(Ref<I> ref) {
 		return ((RefImpl<I>) ref).asString();
+	}
+
+	@Override
+	public I merge(I entity, String id) {
+		Ref<I> internalId = toInternalId(id);
+		I existing = persister.retrieve(internalId);
+		existing.mergeFrom(entity);
+		return existing;
 	}
 }

@@ -40,8 +40,17 @@ public final class IndexedIdPersistenceHelper<ID extends Comparable<ID>> impleme
 
 	@Override
 	public ID toExternalId(Ref<IdFieldMappedFuzzyItem> ref) {
-		throw new UnsupportedOperationException(); // HERE!!!
-		// TODO Auto-generated method stub
-//		return ((RefImpl<I>) ref).asString();
+		return null;  // Return null and let entity converter do it
 	}
+
+	@Override
+	public IdFieldMappedFuzzyItem merge(IdFieldMappedFuzzyItem entity, ID id) {
+		IdFieldMappedFuzzyItem existing = findEntityById(id);
+		if (existing == null) {
+			return entity; // it's a new entity
+		}
+		existing.mergeFrom(entity);
+		return existing;
+	}
+
 }

@@ -92,6 +92,9 @@ public abstract class AbstractCRUDRepository<I, T, ID extends Serializable> impl
 
 
 	protected void setId(T entity, ID ref) {
+		if (ref == null) {
+			return; // let field mappings do it for us
+		}
 		try {
 			idField.set(entity, ref);
 		} catch (IllegalArgumentException e) {

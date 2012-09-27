@@ -10,7 +10,6 @@ import org.fuzzydb.attrs.userobjects.IdFieldMappedFuzzyItem;
 import org.fuzzydb.attrs.userobjects.MappedFuzzyItem;
 import org.fuzzydb.attrs.userobjects.MappedItem;
 import org.fuzzydb.client.DataOperations;
-import org.fuzzydb.client.Ref;
 import org.fuzzydb.client.internal.ResultImpl;
 import org.fuzzydb.core.query.Result;
 import org.fuzzydb.core.query.ResultIterator;
@@ -120,15 +119,6 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable & Compara
 			}
 		};
 		return iterator;
-	}
-
-	@Override
-	protected MappedItem merge(MappedItem toWrite,
-			Ref<MappedItem> existingRef) {
-
-		MappedItem existing = getPersister().retrieve(existingRef);
-		existing.mergeFrom(toWrite);
-		return existing;
 	}
 
 	@Override
