@@ -39,7 +39,7 @@ public class FuzzyRepositoryFactory extends RepositoryFactorySupport {
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	protected <T, ID extends Serializable & Comparable<ID>> CrudRepository<T, ID> createTargetRepository(
+	protected <T, ID extends Serializable> CrudRepository<T, ID> createTargetRepository(
             RepositoryMetadata metadata) {
 
         Class<?> repositoryInterface = metadata.getRepositoryInterface();

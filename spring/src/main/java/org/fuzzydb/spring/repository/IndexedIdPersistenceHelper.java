@@ -5,7 +5,7 @@ import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
 import org.fuzzydb.client.exceptions.UnknownObjectException;
 
-public final class IndexedIdPersistenceHelper<ID extends Comparable<ID>> implements
+public final class IndexedIdPersistenceHelper<ID> implements
 		IdPersistenceHelper<ID, IdFieldMappedFuzzyItem> {
 
 	private final String idField = "id";
@@ -25,7 +25,7 @@ public final class IndexedIdPersistenceHelper<ID extends Comparable<ID>> impleme
 	public IdFieldMappedFuzzyItem findEntityById(ID id) {
 		IdFieldMappedFuzzyItem entity;
 		try {
-			entity = persister.retrieve(internalType, idField, id);
+			entity = persister.retrieve(internalType, idField, (Comparable<?>)id);
 		} catch (UnknownObjectException e) {
 			return null;
 		}

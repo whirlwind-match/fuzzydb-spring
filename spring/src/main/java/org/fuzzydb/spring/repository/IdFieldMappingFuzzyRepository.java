@@ -30,7 +30,7 @@ import org.springframework.data.mapping.model.MappingException;
  *
  * @param <T> the type being stored
  */
-public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable & Comparable<KEY>> extends AbstractConvertingRepository<MappedItem, T, KEY> implements FuzzyRepository<T,KEY>, InitializingBean {
+public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends AbstractConvertingRepository<MappedItem, T, KEY> implements FuzzyRepository<T,KEY>, InitializingBean {
 
 	private final WhirlwindConversionService converter;
 
