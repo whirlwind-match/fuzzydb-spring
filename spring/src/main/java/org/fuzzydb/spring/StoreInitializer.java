@@ -1,5 +1,6 @@
 package org.fuzzydb.spring;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,6 +51,8 @@ public class StoreInitializer implements InitializingBean {
 //	@Qualifier("resource")
 	private String /* TODO: Resource */ resourcePath;
 
+	private String prioritiesResourcePath;
+
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -74,7 +77,12 @@ public class StoreInitializer implements InitializingBean {
 		}
 
 
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        applyMatcherConfigs();
+        applyPrioritiesConfigs();
+	}
+
+	private void applyMatcherConfigs() throws IOException {
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         if (resourcePath == null) {
         	resourcePath = autoResourceBase + "matchers/*.xml";
         }
@@ -83,6 +91,19 @@ public class StoreInitializer implements InitializingBean {
         for (Resource resource : resources) {
         	log.info("Loading match style from: {}", resource.getURL());
         	WWConfigHelper.updateScorerConfig(store, resource.getInputStream());
+		}
+	}
+
+	private void applyPrioritiesConfigs() throws IOException {
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        if (prioritiesResourcePath == null) {
+        	prioritiesResourcePath = autoResourceBase + "priorities/*.xml";
+        }
+        Resource[] resources = resolver.getResources(prioritiesResourcePath);
+
+        for (Resource resource : resources) {
+        	log.info("Loading match style from: {}", resource.getURL());
+        	WWConfigHelper.updateIndexConfig(store, resource.getInputStream());
 		}
 	}
 
