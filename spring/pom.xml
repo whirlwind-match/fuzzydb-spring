@@ -110,9 +110,4 @@
         	<version>${spring.version}</version>
         </dependency>
     </dependencies>
-
-
-  <scm>
-    <tag>1.0.0.RELEASE</tag>
-  </scm>
 </project>
