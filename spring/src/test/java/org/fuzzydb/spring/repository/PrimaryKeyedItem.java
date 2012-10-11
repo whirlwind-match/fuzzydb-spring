@@ -2,16 +2,16 @@ package org.fuzzydb.spring.repository;
 
 import java.io.Serializable;
 
-import org.springframework.data.annotation.Id;
+import org.fuzzydb.core.annotations.Key;
 
 public class PrimaryKeyedItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	private String email;
+	@Key(unique=true)
+	private final String email;
 
-	private String passHash;
+	private final String passHash;
 
 	public PrimaryKeyedItem(String email, String passHash) {
 		this.email = email;

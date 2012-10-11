@@ -30,9 +30,9 @@ public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Re
 	@Override
 	public void afterPropertiesSet() {
 		super.afterPropertiesSet();
-		 if (!idField.getType().isAssignableFrom(Ref.class)) {
-			 throw new MappingException(type.getCanonicalName() + " must have an @Id annotated field of type Ref");
-		 }
+		if (idField == null || !idField.getType().isAssignableFrom(Ref.class)) {
+			throw new MappingException(type.getCanonicalName() + " must have a @Key(unique=true) annotated field of type Ref");
+		}
 	}
 
 	@Override

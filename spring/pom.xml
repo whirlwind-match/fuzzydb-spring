@@ -11,6 +11,9 @@
         <relativePath>../fuzzydb-parent</relativePath>
     </parent>
 
+	<properties>
+		<spring.data.version>1.4.0.RELEASE</spring.data.version>
+	</properties>
 
     <dependencies>
         <dependency>

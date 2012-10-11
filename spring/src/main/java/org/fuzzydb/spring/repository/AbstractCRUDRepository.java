@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 
 import org.fuzzydb.client.DataOperations;
+import org.fuzzydb.core.annotations.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -13,7 +14,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mapping.model.MappingException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -50,15 +50,17 @@ public abstract class AbstractCRUDRepository<I, T, ID extends Serializable> impl
 			@Override
 			public void doWith(Field field) throws IllegalArgumentException,
 					IllegalAccessException {
-				if (field.isAnnotationPresent(Id.class)) {
-					ReflectionUtils.makeAccessible(field);
-					idField = field;
+
+				if (field.isAnnotationPresent(Id.class) || (field.isAnnotationPresent(Key.class) && field.getAnnotation(Key.class).unique() ) ) {
+					if (idField == null) {
+						ReflectionUtils.makeAccessible(field);
+						idField = field;
+					} else {
+						log.warn("More than one id field found - using first found: " + idField );
+					}
 				}
 			}
 		});
-		if (idField == null) {
-			throw new MappingException(type.getCanonicalName() + " must have an @Id annotated field");
-		}
 	}
 
 

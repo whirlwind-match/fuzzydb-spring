@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.core.query.ResultSet;
+import org.springframework.data.mapping.model.MappingException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -17,6 +18,14 @@ public class RawCRUDRepository<T,ID extends Serializable & Comparable<ID>> exten
 	public RawCRUDRepository(Class<T> type, DataOperations persister) {
 		super(type, persister);
 		Assert.isAssignable(Serializable.class, type, "Items being persisted by Raw repositories must be Serializable. ");
+	}
+
+	@Override
+	public void afterPropertiesSet() {
+		super.afterPropertiesSet();
+		if (idField == null || !Comparable.class.isAssignableFrom(idField.getType())) {
+			throw new MappingException(type.getCanonicalName() + " must have a @Key(unique=true) annotated field that is Comparable");
+		}
 	}
 
 	@Override
