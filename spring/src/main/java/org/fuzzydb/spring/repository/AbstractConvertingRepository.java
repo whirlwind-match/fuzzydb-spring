@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
-import org.fuzzydb.client.exceptions.UnknownObjectException;
 import org.fuzzydb.core.query.Result;
 import org.fuzzydb.core.query.ResultSet;
 import org.springframework.data.annotation.Id;
@@ -74,28 +73,9 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	}
 
 	private <S extends T> void saveOrUpdate(S entity, I internalEntity) {
-		ID existingRef = getId(entity);
-
-		if (existingRef != null) { // already supplied, so either insert with ID or is merge
-			I merged = getIdPersistenceHelper().merge(internalEntity, existingRef);
-			try {
-				persister.update(merged);
-				return;
-			} catch (UnknownObjectException e) {
-				deleteIfPossible(existingRef);
-			}
-		}
-		Ref<I> ref = persister.save(internalEntity);
-		setId(entity, getIdPersistenceHelper().toExternalId(ref));
-	}
-
-	private void deleteIfPossible(ID existingRef) {
-		log.warn("save() - update of detached entity detected, with no merge support so doing delete/create instead on {}", existingRef);
-		try {
-			persister.delete(existingRef);
-		} catch (UnknownObjectException e) {
-			log.debug("Nothing deleted.");
-		}
+		ID existingRef = getId(entity); // may be null for some strategies on create
+		ID ref = getPersistenceStrategy().saveOrUpdate(internalEntity, existingRef);
+		setId(entity, ref);
 	}
 
 	@Override
@@ -103,14 +83,14 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	public T findOne(ID id) {
 		selectNamespace();
 
-		I entityById = getIdPersistenceHelper().findEntityById(id);
+		I entityById = getPersistenceStrategy().findEntityById(id);
 		T external = fromInternal(entityById);
-		Ref<I> ref = getIdPersistenceHelper().toInternalId(id);
-		setId(external, getIdPersistenceHelper().toExternalId(ref));
+		Ref<I> ref = getPersistenceStrategy().toInternalId(id);
+		setId(external, getPersistenceStrategy().toExternalId(ref));
 		return external;
 	}
 
-	abstract protected PersistByIdPersistenceStrategy<ID, I> getIdPersistenceHelper();
+	abstract protected PersistByIdPersistenceStrategy<ID, I> getPersistenceStrategy();
 
 	@Override
 	@Transactional(readOnly=true)
@@ -125,14 +105,14 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	@Transactional(readOnly=true)
 	public boolean exists(ID id) {
 		selectNamespace();
-		return getIdPersistenceHelper().exists(id);
+		return getPersistenceStrategy().exists(id);
 	}
 
 	@Override
 	@Transactional
 	public void delete(ID id) {
 		selectNamespace();
-		persister.delete(getIdPersistenceHelper().toInternalId(id));
+		persister.delete(getPersistenceStrategy().toInternalId(id));
 	}
 
 	@Override
@@ -165,7 +145,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 
 					@Override
 					protected Ref<I> convert(ID internal) {
-						return getIdPersistenceHelper().toInternalId(internal);
+						return getPersistenceStrategy().toInternalId(internal);
 					}
 				};
 			}

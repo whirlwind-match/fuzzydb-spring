@@ -56,7 +56,7 @@ public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Re
 	}
 
 	@Override
-	protected PersistByIdPersistenceStrategy<Ref<T>, T> getIdPersistenceHelper() {
+	protected PersistByIdPersistenceStrategy<Ref<T>, T> getPersistenceStrategy() {
 		return idPersistenceHelper;
 	}
 }

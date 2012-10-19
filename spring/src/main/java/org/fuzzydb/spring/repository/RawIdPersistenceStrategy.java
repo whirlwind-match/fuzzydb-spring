@@ -5,7 +5,7 @@ import org.fuzzydb.client.Ref;
 
 public class RawIdPersistenceStrategy<I> implements PersistByIdPersistenceStrategy<org.fuzzydb.client.Ref<I>, I> {
 
-	private DataOperations persister;
+	private final DataOperations persister;
 
 	public RawIdPersistenceStrategy(DataOperations persister) {
 		this.persister = persister;
@@ -32,7 +32,8 @@ public class RawIdPersistenceStrategy<I> implements PersistByIdPersistenceStrate
 	}
 
 	@Override
-	public I merge(I entity, Ref<I> id) {
-		return entity;
+	public
+	Ref<I> saveOrUpdate(I entity, Ref<I> id) {
+		return persister.save(entity);
 	}
 }

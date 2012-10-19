@@ -45,11 +45,41 @@ public final class RefAsStringIdPersistenceStrategy<I extends MappedItem> implem
 		return ((RefImpl<I>) ref).asString();
 	}
 
-	@Override
-	public I merge(I entity, String id) {
-		Ref<I> internalId = toInternalId(id);
+	/**
+	 * Should do anything needed to merge an existing back in with
+	 * existingRef from the current transaction.
+	 *
+	 * @returns entity or copy of entity that is ready to be natively persisted.
+	 */
+	public I merge(I entity, Ref<I> internalId) {
 		I existing = persister.retrieve(internalId);
 		existing.mergeFrom(entity);
 		return existing;
 	}
+
+	@Override
+	public String saveOrUpdate(I entity, String id) {
+		if (id != null) { // already supplied, so either insert with ID or is merge
+			Ref<I> internalId = toInternalId(id);
+			I merged = merge(entity, internalId);
+			try {
+				persister.update(merged);
+				return id; // on update id hasn't changed
+			} catch (UnknownObjectException e) {
+				deleteIfPossible(internalId);
+			}
+		}
+		Ref<I> ref = persister.save(entity);
+		return toExternalId(ref);
+	}
+
+	private void deleteIfPossible(Ref<I> existingRef) {
+//		log.warn("save() - update of detached entity detected, with no merge support so doing delete/create instead on {}", existingRef);
+		try {
+			persister.delete(existingRef);
+		} catch (UnknownObjectException e) {
+//			log.debug("Nothing deleted.");
+		}
+	}
+
 }

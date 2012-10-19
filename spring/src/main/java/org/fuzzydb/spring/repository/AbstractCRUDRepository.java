@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
+import javax.annotation.Nonnull;
+
 import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.core.annotations.Key;
 import org.slf4j.Logger;
@@ -93,7 +95,7 @@ public abstract class AbstractCRUDRepository<I, T, ID extends Serializable> impl
 	abstract protected Class<? extends I> getInternalType();
 
 
-	protected void setId(T entity, ID ref) {
+	protected void setId(T entity, @Nonnull ID ref) {
 		if (ref == null) {
 			return; // let field mappings do it for us
 		}

@@ -65,7 +65,7 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends 
 			idPersistenceHelper = (PersistByIdPersistenceStrategy<KEY, ? extends MappedItem>)new RefAsStringIdPersistenceStrategy<MappedItem>(persister);
 			internalType = MappedFuzzyItem.class;
 		} else {
-			idPersistenceHelper = new IndexedIdPersistenceHelper<KEY>(persister);
+			idPersistenceHelper = new IndexedIdPersistenceStrategy<KEY>(persister);
 			internalType = IdFieldMappedFuzzyItem.class;
 		}
 	}
@@ -129,7 +129,7 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected PersistByIdPersistenceStrategy<KEY, MappedItem> getIdPersistenceHelper() {
+	protected PersistByIdPersistenceStrategy<KEY, MappedItem> getPersistenceStrategy() {
 		return (PersistByIdPersistenceStrategy<KEY, MappedItem>) idPersistenceHelper;
 	}
 }
