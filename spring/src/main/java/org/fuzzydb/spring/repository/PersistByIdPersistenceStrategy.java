@@ -8,7 +8,7 @@ import org.fuzzydb.client.Ref;
  * native Ref, but instead may be based on a key added to a unique index which is used
  * to find the entity on which to operate.
  */
-public interface IdPersistenceHelper<ID, INTERNAL_TYPE> {
+public interface PersistByIdPersistenceStrategy<ID, INTERNAL_TYPE> {
 
 	boolean exists(ID id);
 
@@ -17,11 +17,11 @@ public interface IdPersistenceHelper<ID, INTERNAL_TYPE> {
 	Ref<INTERNAL_TYPE> toInternalId(ID id);
 
 	ID toExternalId(Ref<INTERNAL_TYPE> ref);
-	
+
 	/**
 	 * Should do anything needed to merge an existing back in with
 	 * existingRef from the current transaction.
-	 * 
+	 *
 	 * @returns entity or copy of entity that is ready to be natively persisted.
 	 */
 	INTERNAL_TYPE merge(INTERNAL_TYPE entity, ID id);

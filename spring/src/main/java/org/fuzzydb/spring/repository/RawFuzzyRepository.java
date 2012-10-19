@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
  */
 public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Ref<T>> {
 
-	private final IdPersistenceHelper<Ref<T>, T> idPersistenceHelper = new RawIdPersistenceHelper<T>(persister);
+	private final PersistByIdPersistenceStrategy<Ref<T>, T> idPersistenceHelper = new RawIdPersistenceStrategy<T>(persister);
 
 	public RawFuzzyRepository(Class<T> type) {
 		super(type);
@@ -56,7 +56,7 @@ public class RawFuzzyRepository<T> extends AbstractConvertingRepository<T, T, Re
 	}
 
 	@Override
-	protected IdPersistenceHelper<Ref<T>, T> getIdPersistenceHelper() {
+	protected PersistByIdPersistenceStrategy<Ref<T>, T> getIdPersistenceHelper() {
 		return idPersistenceHelper;
 	}
 }

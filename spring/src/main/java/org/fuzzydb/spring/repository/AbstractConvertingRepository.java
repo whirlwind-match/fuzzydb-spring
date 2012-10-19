@@ -75,6 +75,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 
 	private <S extends T> void saveOrUpdate(S entity, I internalEntity) {
 		ID existingRef = getId(entity);
+
 		if (existingRef != null) { // already supplied, so either insert with ID or is merge
 			I merged = getIdPersistenceHelper().merge(internalEntity, existingRef);
 			try {
@@ -109,7 +110,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		return external;
 	}
 
-	abstract protected IdPersistenceHelper<ID, I> getIdPersistenceHelper();
+	abstract protected PersistByIdPersistenceStrategy<ID, I> getIdPersistenceHelper();
 
 	@Override
 	@Transactional(readOnly=true)

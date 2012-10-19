@@ -3,11 +3,11 @@ package org.fuzzydb.spring.repository;
 import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.client.Ref;
 
-public class RawIdPersistenceHelper<I> implements IdPersistenceHelper<org.fuzzydb.client.Ref<I>, I> {
+public class RawIdPersistenceStrategy<I> implements PersistByIdPersistenceStrategy<org.fuzzydb.client.Ref<I>, I> {
 
 	private DataOperations persister;
 
-	public RawIdPersistenceHelper(DataOperations persister) {
+	public RawIdPersistenceStrategy(DataOperations persister) {
 		this.persister = persister;
 	}
 

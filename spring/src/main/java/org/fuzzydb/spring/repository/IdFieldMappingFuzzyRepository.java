@@ -40,7 +40,7 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends 
 
 	private final boolean useDefaultNamespace;
 
-	private IdPersistenceHelper<KEY, ? extends MappedItem> idPersistenceHelper;
+	private PersistByIdPersistenceStrategy<KEY, ? extends MappedItem> idPersistenceHelper;
 
 	private Class<? extends MappedItem> internalType;
 
@@ -62,7 +62,7 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends 
 
 		// select correct idPersistenceHelper for the index type
 		if (entityConverter.getMappingContext().getPersistentEntity(type).getIdProperty().getType().equals(String.class)) {
-			idPersistenceHelper = (IdPersistenceHelper<KEY, ? extends MappedItem>)new RefAsStringIdPersistenceHelper<MappedItem>(persister);
+			idPersistenceHelper = (PersistByIdPersistenceStrategy<KEY, ? extends MappedItem>)new RefAsStringIdPersistenceStrategy<MappedItem>(persister);
 			internalType = MappedFuzzyItem.class;
 		} else {
 			idPersistenceHelper = new IndexedIdPersistenceHelper<KEY>(persister);
@@ -129,7 +129,7 @@ public class IdFieldMappingFuzzyRepository<T, KEY extends Serializable> extends 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected IdPersistenceHelper<KEY, MappedItem> getIdPersistenceHelper() {
-		return (IdPersistenceHelper<KEY, MappedItem>) idPersistenceHelper;
+	protected PersistByIdPersistenceStrategy<KEY, MappedItem> getIdPersistenceHelper() {
+		return (PersistByIdPersistenceStrategy<KEY, MappedItem>) idPersistenceHelper;
 	}
 }

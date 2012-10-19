@@ -6,14 +6,14 @@ import org.fuzzydb.client.Ref;
 import org.fuzzydb.client.exceptions.UnknownObjectException;
 import org.fuzzydb.client.internal.RefImpl;
 
-public final class RefAsStringIdPersistenceHelper<I extends MappedItem> implements
-		IdPersistenceHelper<String, I> {
+public final class RefAsStringIdPersistenceStrategy<I extends MappedItem> implements
+		PersistByIdPersistenceStrategy<String, I> {
 
 
 	private final DataOperations persister;
 
 
-	public RefAsStringIdPersistenceHelper(DataOperations persister) {
+	public RefAsStringIdPersistenceStrategy(DataOperations persister) {
 		this.persister = persister;
 	}
 
