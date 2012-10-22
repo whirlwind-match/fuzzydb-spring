@@ -53,42 +53,18 @@ public final class IndexedIdPersistenceStrategy<ID> implements
 
 	@Override
 	public ID saveOrUpdate(IdFieldMappedFuzzyItem entity, ID existingRef) {
-		if (existingRef != null) { // already supplied, so either insert with ID or is merge
-			IdFieldMappedFuzzyItem merged = merge(entity, existingRef);
-			try {
-				persister.update(merged);
+		if (existingRef != null) {
+			// already supplied, so either insert with ID or is merge
+			IdFieldMappedFuzzyItem existing = findEntityById(existingRef);
+			// Merge of exising
+			if (existing != null) {
+				existing.mergeFrom(entity);
+				persister.update(existing);
 				return existingRef;
-			} catch (UnknownObjectException e) {
-				deleteIfPossible(existingRef);
 			}
 		}
+		// New entity
 		Ref<IdFieldMappedFuzzyItem> ref = persister.save(entity);
 		return toExternalId(ref);
-
 	}
-
-	private void deleteIfPossible(ID existingRef) {
-//		log.warn("save() - update of detached entity detected, with no merge support so doing delete/create instead on {}", existingRef);
-		try {
-			persister.delete(existingRef);
-		} catch (UnknownObjectException e) {
-//			log.debug("Nothing deleted.");
-		}
-	}
-
-	/**
-	 * Should do anything needed to merge an existing back in with
-	 * existingRef from the current transaction.
-	 *
-	 * @returns entity or copy of entity that is ready to be natively persisted.
-	 */
-	public IdFieldMappedFuzzyItem merge(IdFieldMappedFuzzyItem entity, ID id) {
-		IdFieldMappedFuzzyItem existing = findEntityById(id);
-		if (existing == null) {
-			return entity; // it's a new entity
-		}
-		existing.mergeFrom(entity);
-		return existing;
-	}
-
 }
