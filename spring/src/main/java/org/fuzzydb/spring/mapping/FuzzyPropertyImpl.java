@@ -7,12 +7,16 @@ import org.fuzzydb.attrs.AttributeDefinitionService;
 import org.fuzzydb.attrs.string.StringValue;
 import org.fuzzydb.core.whirlwind.internal.IAttribute;
 import org.fuzzydb.spring.annotation.DerivedField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.model.AnnotationBasedPersistentProperty;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 
 
 public class FuzzyPropertyImpl extends AnnotationBasedPersistentProperty<FuzzyProperty> implements FuzzyProperty {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private int attrId = 0;
 
@@ -44,10 +48,12 @@ public class FuzzyPropertyImpl extends AnnotationBasedPersistentProperty<FuzzyPr
 			// workaround for read-only state on attrDefinitionService at this point
 			attrId = 0;
 			isFuzzyAttribute = false;
+			log.debug("Field {} not configured as fuzzy attribute. Will not be available for fuzzy match queries", field);
 			return;
 		}
 		Class<? extends IAttribute> dbClass = attrDefinitionService.getDbClass(attrId);
 		isFuzzyAttribute = !(dbClass.equals(StringValue.class));
+		log.debug("Field {} will be available for fuzzy match queries as {}", field, dbClass);
 	}
 
 	@Override
