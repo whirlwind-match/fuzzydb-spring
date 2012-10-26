@@ -8,10 +8,14 @@ import org.fuzzydb.client.DataOperations;
 import org.fuzzydb.spring.repository.FuzzyRepository;
 import org.fuzzydb.spring.repository.IdFieldMappingFuzzyRepository;
 import org.fuzzydb.spring.repository.RawCRUDRepository;
+import org.fuzzydb.spring.transaction.WhirlwindPlatformTransactionManager;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 
 
@@ -23,11 +27,14 @@ public class FuzzyRepositoryFactory extends RepositoryFactorySupport {
 
 	private final DataOperations persister;
 
+	private final WhirlwindPlatformTransactionManager txManager;
 
-    public FuzzyRepositoryFactory(DataOperations persister, AttributeDefinitionService attributeDefinitionService, WhirlwindConversionService conversionService) {
+
+    public FuzzyRepositoryFactory(DataOperations persister, AttributeDefinitionService attributeDefinitionService, WhirlwindConversionService conversionService, WhirlwindPlatformTransactionManager txManager) {
 		this.persister = persister;
 		this.attributeDefinitionService = attributeDefinitionService;
 		this.conversionService = conversionService;
+		this.txManager = txManager;
 	}
 
 
@@ -46,9 +53,15 @@ public class FuzzyRepositoryFactory extends RepositoryFactorySupport {
 
         // depending on interface .. create diff implementations
         if (FuzzyRepository.class.isAssignableFrom(repositoryInterface)) {
-        	IdFieldMappingFuzzyRepository<T, ID> repo = new IdFieldMappingFuzzyRepository<T, ID>((Class<T>) metadata.getDomainType(), false,
+        	final IdFieldMappingFuzzyRepository<T, ID> repo = new IdFieldMappingFuzzyRepository<T, ID>((Class<T>) metadata.getDomainType(), false,
         			persister, conversionService, attributeDefinitionService);
-        	repo.afterPropertiesSet();
+    		new TransactionTemplate(txManager).execute(new TransactionCallback<Void>() {
+				@Override
+				public Void doInTransaction(TransactionStatus status) {
+					repo.afterPropertiesSet();
+					return null;
+				}
+			});
         	return repo;
         }
 

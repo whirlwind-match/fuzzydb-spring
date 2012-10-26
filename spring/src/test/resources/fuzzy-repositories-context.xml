@@ -19,7 +19,6 @@
 <!-- 	<tx:annotation-driven mode="proxy" transaction-manager="transactionManager" /> -->
 	<fuzzy:embedded-database />
 	<fuzzy:tx-manager />
-<!-- 	<fuzzy:initialize />	 -->
 
     <fuzzy:repositories base-package="org.fuzzydb.spring.examples">
     </fuzzy:repositories>    

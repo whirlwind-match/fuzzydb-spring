@@ -18,7 +18,6 @@ import org.w3c.dom.Element;
 
 public class FuzzyStoreConfigParser extends AbstractBeanDefinitionParser {
 
-
 	@Override
 	protected String resolveId(Element element, AbstractBeanDefinition definition, ParserContext parserContext) throws BeanDefinitionStoreException {
 		String id = element.getAttribute(ID_ATTRIBUTE);
