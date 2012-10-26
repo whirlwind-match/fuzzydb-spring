@@ -14,25 +14,32 @@
 
 	<properties>
 		<spring.data.version>1.4.0.RELEASE</spring.data.version>
+		<fuzzydb.version>1.0.1.BUILD-SNAPSHOT</fuzzydb.version>
 	</properties>
 
     <dependencies>
         <dependency>
             <groupId>org.fuzzydb.attrs</groupId>
             <artifactId>org.fuzzydb.attrs</artifactId>
-            <version>1.0.0.RELEASE</version>
+            <version>${fuzzydb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fuzzydb</groupId>
+            <artifactId>org.fuzzydb.io.packet</artifactId>
+            <version>${fuzzydb.version}</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.fuzzydb</groupId>
+            <artifactId>org.fuzzydb.server</artifactId>
+            <version>${fuzzydb.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.server</artifactId>
-            <version>1.0.0.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.fuzzydb</groupId>
-            <artifactId>org.fuzzydb.server</artifactId>
-            <version>1.0.0.RELEASE</version>
+            <version>${fuzzydb.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -77,13 +84,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.fuzzydb</groupId>
-            <artifactId>org.fuzzydb.io.packet</artifactId>
-            <version>1.0.0.RELEASE</version>
-            <type>jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
