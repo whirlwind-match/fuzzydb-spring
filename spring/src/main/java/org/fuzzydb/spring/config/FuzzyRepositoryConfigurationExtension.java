@@ -2,6 +2,7 @@ package org.fuzzydb.spring.config;
 
 import org.fuzzydb.attrs.converters.WhirlwindConversionService;
 import org.fuzzydb.attrs.internal.CurrentTxAttrDefinitionMgr;
+import org.fuzzydb.spring.StoreInitializer;
 import org.fuzzydb.spring.repository.support.FuzzyRepositoryFactoryBean;
 import org.fuzzydb.spring.transaction.WhirlwindExceptionTranslator;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -38,6 +39,15 @@ public class FuzzyRepositoryConfigurationExtension extends RepositoryConfigurati
 
             registerWithSourceAndGeneratedBeanName(registry, definition, source);
         }
+
+		// Conversion service default
+        if (!hasBean(StoreInitializer.class, registry)) {
+            AbstractBeanDefinition definition =
+                    BeanDefinitionBuilder
+                            .rootBeanDefinition(StoreInitializer.class)
+                            .getBeanDefinition();
+            registerWithSourceAndGeneratedBeanName(registry, definition, source);
+		}
 
 		// Conversion service default
         if (!hasBean(WhirlwindConversionService.class, registry)) {

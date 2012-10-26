@@ -3,6 +3,8 @@ package org.fuzzydb.spring.config;
 import static org.fuzzydb.spring.config.Constants.DEFAULT_STORE_ID;
 
 import org.fuzzydb.spring.StoreInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
@@ -18,6 +20,8 @@ import org.w3c.dom.Element;
  *
  */
 public class FuzzyInitializeConfigParser extends AbstractBeanDefinitionParser {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
 	protected boolean shouldGenerateId() {
@@ -35,7 +39,9 @@ public class FuzzyInitializeConfigParser extends AbstractBeanDefinitionParser {
 	@Override
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
 
-	    BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(StoreInitializer.class);
+		log.info("<fuzzy:initialize> with defaults can be omitted if using <fuzzy:repositories>");
+
+		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(StoreInitializer.class);
 
 		String storeId = element.getAttribute("store");
 		if (!StringUtils.hasText(storeId)) {
