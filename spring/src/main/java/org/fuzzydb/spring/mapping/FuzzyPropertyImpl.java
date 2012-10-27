@@ -48,12 +48,15 @@ public class FuzzyPropertyImpl extends AnnotationBasedPersistentProperty<FuzzyPr
 			// workaround for read-only state on attrDefinitionService at this point
 			attrId = 0;
 			isFuzzyAttribute = false;
-			log.debug("Field {} not configured as fuzzy attribute. Will not be available for fuzzy match queries", field);
+			log.debug("[simple attr] {}.{} will not be available for fuzzy match queries", field.getDeclaringClass().getSimpleName(), field.getName());
 			return;
 		}
 		Class<? extends IAttribute> dbClass = attrDefinitionService.getDbClass(attrId);
 		isFuzzyAttribute = !(dbClass.equals(StringValue.class));
-		log.debug("Field {} will be available for fuzzy match queries as {}", field, dbClass);
+		if (log.isDebugEnabled()) {
+			log.debug("[fuzzy attr]  {}.{} -> {}",
+					new Object[] {field.getDeclaringClass().getSimpleName(), field.getName(), dbClass.getSimpleName()});
+		}
 	}
 
 	@Override
