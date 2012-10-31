@@ -168,7 +168,7 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	}
 
 	@Override
-	@Transactional(readOnly=true, propagation=Propagation.MANDATORY)
+	@Transactional(readOnly=true)
 	public Page<Result<T>> findMatchesFor(AttributeMatchQuery<T> query, Pageable pageable) {
 		selectNamespace();
 		I internal = toInternal(query.getQueryTarget());
