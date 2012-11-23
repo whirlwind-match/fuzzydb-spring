@@ -8,13 +8,12 @@
     <parent>
         <groupId>org.fuzzydb</groupId>
         <artifactId>fuzzydb-parent</artifactId>
-        <version>1.0.0.RELEASE</version>
-        <relativePath>../fuzzydb-parent</relativePath>
+        <version>1.0.1.RELEASE</version>
+        <relativePath></relativePath>
     </parent>
 
 	<properties>
 		<spring.data.version>1.4.0.RELEASE</spring.data.version>
-		<fuzzydb.version>1.0.1.BUILD-SNAPSHOT</fuzzydb.version>
 	</properties>
 
     <dependencies>
@@ -46,6 +45,9 @@
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.test.support</artifactId>
+            <version>1.0.0.RELEASE</version>
+            <type>jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
