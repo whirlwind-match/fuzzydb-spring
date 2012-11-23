@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.fuzzydb</groupId>
         <artifactId>fuzzydb-parent</artifactId>
-        <version>1.0.1.RELEASE</version>
+        <version>1.0.2.BUILD-SNAPSHOT</version>
         <relativePath></relativePath>
     </parent>
 
@@ -20,32 +20,32 @@
         <dependency>
             <groupId>org.fuzzydb.attrs</groupId>
             <artifactId>org.fuzzydb.attrs</artifactId>
-            <version>1.0.1.RELEASE</version>
+            <version>1.0.2.BUILD-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.io.packet</artifactId>
-            <version>1.0.1.RELEASE</version>
+            <version>1.0.2.BUILD-SNAPSHOT</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.server</artifactId>
-            <version>1.0.1.RELEASE</version>
+            <version>1.0.2.BUILD-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.server</artifactId>
-            <version>1.0.1.RELEASE</version>
+            <version>1.0.2.BUILD-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.test.support</artifactId>
-            <version>1.0.0.RELEASE</version>
+            <version>1.0.2.BUILD-SNAPSHOT</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
