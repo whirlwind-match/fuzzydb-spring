@@ -14,6 +14,8 @@ import java.io.Serializable;
 import org.fuzzydb.attrs.AttributeDefinitionService;
 import org.fuzzydb.attrs.bool.BooleanValue;
 import org.fuzzydb.attrs.converters.WhirlwindConversionService;
+import org.fuzzydb.attrs.enums.EnumDefinition;
+import org.fuzzydb.attrs.enums.EnumExclusiveValue;
 import org.fuzzydb.attrs.internal.AttrDefinitionMgr;
 import org.fuzzydb.attrs.simple.FloatRangePreference;
 import org.fuzzydb.attrs.simple.FloatValue;
@@ -23,6 +25,7 @@ import org.fuzzydb.client.Ref;
 import org.fuzzydb.client.internal.RefImpl;
 import org.fuzzydb.core.whirlwind.internal.IAttribute;
 import org.fuzzydb.core.whirlwind.internal.IAttributeMap;
+import org.fuzzydb.spring.repository.FuzzyEntityConverterTest.FuzzyItem.LiftType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +40,7 @@ import org.springframework.data.annotation.Id;
 @RunWith(MockitoJUnitRunner.class)
 public class FuzzyEntityConverterTest  {
 
+
 	private IdFieldMappingFuzzyRepository<FuzzyItem, String> repo;
 
 	@Mock
@@ -48,6 +52,7 @@ public class FuzzyEntityConverterTest  {
 	private final int isMaleId = attrDefinitionService.getAttrId("isMale", Boolean.class);
 	private final int ageId = attrDefinitionService.getAttrId("age", Float.class);
 	private final int ageRangeId = attrDefinitionService.getAttrId("ageRange", float[].class);
+	private final int liftTypeId = attrDefinitionService.getAttrId("liftType", Enum.class);
 
 
 	@Captor
@@ -56,6 +61,11 @@ public class FuzzyEntityConverterTest  {
 
 	@Before
 	public void injectMocksManually() throws Exception {
+		EnumDefinition definition = attrDefinitionService.getEnumDefinition("liftType");
+		attrDefinitionService.associateAttrToEnumDef(liftTypeId, definition);
+		definition.getEnumValue(LiftType.OfferingLift.name(), liftTypeId);
+		definition.getEnumValue(LiftType.WantLift.name(), liftTypeId);
+		
 		WhirlwindConversionService converter = new WhirlwindConversionService();
 		new DirectFieldAccessor(converter).setPropertyValue("attrDefinitionService", attrDefinitionService);
 		converter.afterPropertiesSet();
@@ -127,6 +137,10 @@ public class FuzzyEntityConverterTest  {
 
 	public static class FuzzyItem implements Serializable {
 
+		public enum LiftType {
+			OfferingLift, WantLift;
+		}
+
 		private static final long serialVersionUID = 1L;
 
 		@Id
@@ -134,6 +148,8 @@ public class FuzzyEntityConverterTest  {
 
 		Boolean isMale;
 
+		LiftType liftType;
+		
 		Float age;
 
 		float[] ageRange;
@@ -142,6 +158,7 @@ public class FuzzyEntityConverterTest  {
 			isMale = Boolean.FALSE;
 			age = 1.1f;
 			ageRange = new float[]{25f, 30f, 38f};
+			liftType = LiftType.OfferingLift;
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package org.fuzzydb.spring.convert;
 
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -254,10 +256,25 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 	}
 
 	private Object wrapValue(String key, Object value, Class<? extends IAttribute> dbClass) {
-		if (dbClass.equals(EnumExclusiveValue.class))
+		if (dbClass.equals(EnumExclusiveValue.class)) {
+			if (value instanceof Enum) {
+				return new EnumAttribute(key, "not used", ((Enum<?>) value).name());
+			}
 			return new EnumAttribute(key, "not used", (String)value);
-		if (dbClass.equals(EnumMultipleValue.class))
+		}
+		if (dbClass.equals(EnumMultipleValue.class)) {
+			if (value instanceof EnumSet) {
+				EnumSet enumSet = (EnumSet) value;
+				String vals[] = new String[enumSet.size()];
+				int i = 0;
+				for (Iterator iterator = enumSet.iterator(); iterator.hasNext();) {
+					Enum<?> enum1 = (Enum<?>) iterator.next();
+					vals[i++] = enum1.name();
+				}
+				return new MultiEnumAttribute(key, "not used", vals);
+			}
 			return new MultiEnumAttribute(key, "not used", (String[])value);
+		}
 		return value;
 	}
 
