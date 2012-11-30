@@ -15,7 +15,6 @@ import org.fuzzydb.attrs.AttributeDefinitionService;
 import org.fuzzydb.attrs.bool.BooleanValue;
 import org.fuzzydb.attrs.converters.WhirlwindConversionService;
 import org.fuzzydb.attrs.enums.EnumDefinition;
-import org.fuzzydb.attrs.enums.EnumExclusiveValue;
 import org.fuzzydb.attrs.internal.AttrDefinitionMgr;
 import org.fuzzydb.attrs.simple.FloatRangePreference;
 import org.fuzzydb.attrs.simple.FloatValue;
