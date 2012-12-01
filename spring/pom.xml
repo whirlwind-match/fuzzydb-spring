@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.fuzzydb.spring</artifactId>
-  <version>1.1.0.M1</version>
+  <version>1.1.0.M2-SNAPSHOT</version>
     <description>Provides integration with Spring transaction management</description>
 
     <parent>
@@ -20,32 +20,32 @@
         <dependency>
             <groupId>org.fuzzydb.attrs</groupId>
             <artifactId>org.fuzzydb.attrs</artifactId>
-            <version>1.1.0.M1</version>
+            <version>1.1.0.M2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.io.packet</artifactId>
-            <version>1.1.0.M1</version>
+            <version>1.1.0.M2-SNAPSHOT</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.server</artifactId>
-            <version>1.1.0.M1</version>
+            <version>1.1.0.M2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.server</artifactId>
-            <version>1.1.0.M1</version>
+            <version>1.1.0.M2-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.fuzzydb</groupId>
             <artifactId>org.fuzzydb.test.support</artifactId>
-            <version>1.1.0.M1</version>
+            <version>1.1.0.M2-SNAPSHOT</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
@@ -112,8 +112,4 @@
         	<version>${spring.version}</version>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>1.1.0.M1</tag>
-  </scm>
 </project>
