@@ -8,12 +8,12 @@
     <parent>
         <groupId>org.fuzzydb</groupId>
         <artifactId>fuzzydb-parent</artifactId>
-        <version>1.1.0.RELEASE</version>
+        <version>1.2.0.M1-SNAPSHOT</version>
         <relativePath />
     </parent>
 
 	<properties>
-		<fuzzydb.version>1.1.0.RELEASE</fuzzydb.version>
+		<fuzzydb.version>1.2.0.M1-SNAPSHOT</fuzzydb.version>
 		<spring.data.version>1.5.1.RELEASE</spring.data.version>
 	</properties>
 
