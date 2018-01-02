@@ -4,7 +4,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.data.annotation.Id;
 
@@ -64,15 +65,14 @@ public class IdFieldMappingFuzzyRepositoryTest  {
 		new DirectFieldAccessor(converter).setPropertyValue("attrDefinitionService", attrDefinitionService);
 		converter.afterPropertiesSet();
 
-		repo = new IdFieldMappingFuzzyRepository<FuzzyItem, String>(FuzzyItem.class, false, persister, converter, attrDefinitionService);
+		repo = new IdFieldMappingFuzzyRepository<>(FuzzyItem.class, false, persister, converter, attrDefinitionService);
 		repo.afterPropertiesSet();
 	}
 
 	@Test
 	public void shouldConvertToWWItemOnSave() {
 		// mocks
-		when(persister.save((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
-		when(persister.getRef((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
+		when(persister.save((FuzzyItem)anyObject())).thenReturn(new RefImpl<>(1, 2, 3));
 
 
 		// the action
@@ -86,7 +86,7 @@ public class IdFieldMappingFuzzyRepositoryTest  {
 		verify(persister, times(1)).save(wwItemCaptor.capture());
 		MappedFuzzyItem storedInDatabase = wwItemCaptor.getValue();
 		IAttributeMap<IAttribute> attrs = storedInDatabase.getAttributeMap();
-		assertThat((BooleanValue)attrs.findAttr(isMaleId),equalTo(new BooleanValue(isMaleId,false)));
+		assertThat(attrs.findAttr(isMaleId),equalTo(new BooleanValue(isMaleId,false)));
 		FloatValue attr = (FloatValue)attrs.findAttr(ageId);
 
 		assertThat(attr, equalTo(new FloatValue(ageId,1.1f)));
@@ -112,6 +112,8 @@ public class IdFieldMappingFuzzyRepositoryTest  {
 		when(persister.retrieve((Ref<MappedFuzzyItem>) anyObject())).thenReturn(internal);
 		when(persister.getRef((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
 
+//		when(persister.retrieve((Ref<MappedFuzzyItem>) any(Ref.class))).thenReturn(internal);
+//		when(persister.getRef(any(FuzzyItem.class))).thenReturn(new RefImpl<>(1, 2, 3));
 
 		// the action
 		FuzzyItem result = repo.findOne("1_1_1");
@@ -122,7 +124,7 @@ public class IdFieldMappingFuzzyRepositoryTest  {
 		assertEquals(Boolean.TRUE, map.get("isMale"));
 		assertEquals(2.2f, map.get("age"));
 		assertArrayEquals(new float[]{1.2f, 2.3f, 3.4f}, (float[])map.get("ageRange"), 0f);
-		assertEquals(new Date(99,10,25).getTime(), 943488000000l);
+		assertEquals(new Date(99,10,25).getTime(), 943488000000L);
 	}
 
 
@@ -143,7 +145,7 @@ public class IdFieldMappingFuzzyRepositoryTest  {
 		@Id
 		String ref;
 
-		Map<String, Object> attributes = new HashMap<String,Object>();
+		Map<String, Object> attributes = new HashMap<>();
 
 		@SuppressWarnings("deprecation")
 		void populateTestData() {

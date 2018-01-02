@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.data.annotation.Id;
 
@@ -64,20 +64,19 @@ public class FuzzyEntityConverterTest  {
 		attrDefinitionService.associateAttrToEnumDef(liftTypeId, definition);
 		definition.getEnumValue(LiftType.OfferingLift.name(), liftTypeId);
 		definition.getEnumValue(LiftType.WantLift.name(), liftTypeId);
-		
+
 		WhirlwindConversionService converter = new WhirlwindConversionService();
 		new DirectFieldAccessor(converter).setPropertyValue("attrDefinitionService", attrDefinitionService);
 		converter.afterPropertiesSet();
 
-		repo = new IdFieldMappingFuzzyRepository<FuzzyItem, String>(FuzzyItem.class, false, persister, converter, attrDefinitionService);
+		repo = new IdFieldMappingFuzzyRepository<>(FuzzyItem.class, false, persister, converter, attrDefinitionService);
 		repo.afterPropertiesSet();
 	}
 
 	@Test
 	public void shouldConvertToWWItemOnSave() {
 		// mocks
-		when(persister.save((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
-		when(persister.getRef((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
+		when(persister.save((FuzzyItem)anyObject())).thenReturn(new RefImpl<>(1, 2, 3));
 
 
 		// the action
@@ -91,7 +90,7 @@ public class FuzzyEntityConverterTest  {
 		verify(persister, times(1)).save(wwItemCaptor.capture());
 		MappedFuzzyItem storedInDatabase = wwItemCaptor.getValue();
 		IAttributeMap<IAttribute> attrs = storedInDatabase.getAttributeMap();
-		assertThat((BooleanValue)attrs.findAttr(isMaleId),equalTo(new BooleanValue(isMaleId,false)));
+		assertThat(attrs.findAttr(isMaleId),equalTo(new BooleanValue(isMaleId,false)));
 		FloatValue attr = (FloatValue)attrs.findAttr(ageId);
 
 		assertThat(attr, equalTo(new FloatValue(ageId,1.1f)));
@@ -111,7 +110,7 @@ public class FuzzyEntityConverterTest  {
 		// mock
 		MappedFuzzyItem internal = getWWItem();
 		when(persister.retrieve((Ref<MappedFuzzyItem>) anyObject())).thenReturn(internal);
-		when(persister.getRef((FuzzyItem)anyObject())).thenReturn(new RefImpl<FuzzyItem>(1,2,3));
+		when(persister.getRef((FuzzyItem)anyObject())).thenReturn(new RefImpl<>(1, 2, 3));
 
 
 		// the action
@@ -137,7 +136,7 @@ public class FuzzyEntityConverterTest  {
 	public static class FuzzyItem implements Serializable {
 
 		public enum LiftType {
-			OfferingLift, WantLift;
+			OfferingLift, WantLift
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -148,7 +147,7 @@ public class FuzzyEntityConverterTest  {
 		Boolean isMale;
 
 		LiftType liftType;
-		
+
 		Float age;
 
 		float[] ageRange;

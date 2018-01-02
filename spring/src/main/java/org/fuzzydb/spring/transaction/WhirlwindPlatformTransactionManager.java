@@ -22,7 +22,7 @@ public class WhirlwindPlatformTransactionManager extends
 
 		private boolean rollbackOnly = false;
 
-		public TransactionHolder(Transaction currentTransaction) {
+		TransactionHolder(Transaction currentTransaction) {
 			this.transaction = currentTransaction;
 		}
 
@@ -34,7 +34,7 @@ public class WhirlwindPlatformTransactionManager extends
 			this.transaction = transaction;
 		}
 
-		public void setRollbackOnly() {
+		void setRollbackOnly() {
 			this.rollbackOnly = true;
 		}
 
@@ -58,7 +58,6 @@ public class WhirlwindPlatformTransactionManager extends
 
 	/**
 	 * Create a transaction manager for this store.
-	 * @param store
 	 */
 	public WhirlwindPlatformTransactionManager(Store store) {
 		super();
@@ -79,7 +78,7 @@ public class WhirlwindPlatformTransactionManager extends
 
 
 		TransactionHolder th = (TransactionHolder)transaction;
-		Assert.isNull(th.getTransaction());
+		Assert.isNull(th.getTransaction(), "No transaction found");
 		th.setTransaction(store.begin());
 	}
 

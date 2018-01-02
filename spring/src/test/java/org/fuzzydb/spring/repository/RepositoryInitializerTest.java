@@ -45,12 +45,8 @@ public class RepositoryInitializerTest {
 	@Test
 	public void singleObjectFromXmlFileShouldBePersisted() throws ClassNotFoundException {
 
-		Mockito.when(repo.save(captor.capture())).thenAnswer(new Answer<PrimaryKeyedItem>() {
-			@Override
-			public PrimaryKeyedItem answer(InvocationOnMock invocation) throws Throwable {
-				return (PrimaryKeyedItem) invocation.getArguments()[0];
-			}
-		});
+		Mockito.when(repo.save(captor.capture())).thenAnswer((Answer<PrimaryKeyedItem>) invocation
+				-> (PrimaryKeyedItem) invocation.getArguments()[0]);
 
 		// the action
 		RepositoryInitializer<PrimaryKeyedItem, String> initializer = initializerforRepository(repo);
@@ -68,13 +64,8 @@ public class RepositoryInitializerTest {
 	@Test
 	public void multipleObjectsFromXmlFileShouldBePersisted() throws ClassNotFoundException {
 
-		Mockito.when(repo.save(listCaptor.capture())).thenAnswer(new Answer<Iterable<PrimaryKeyedItem>>() {
-			@Override
-			@SuppressWarnings("unchecked")
-			public Iterable<PrimaryKeyedItem> answer(InvocationOnMock invocation) throws Throwable {
-				return (Iterable<PrimaryKeyedItem>) invocation.getArguments()[0];
-			}
-		});
+		Mockito.when(repo.save(listCaptor.capture())).thenAnswer((Answer<Iterable<PrimaryKeyedItem>>) invocation ->
+				(Iterable<PrimaryKeyedItem>) invocation.getArguments()[0]);
 
 		// the action
 		RepositoryInitializer<PrimaryKeyedItem, String> initializer = initializerforRepository(repo);
@@ -102,7 +93,7 @@ public class RepositoryInitializerTest {
 		PrimaryKeyedItem one = new PrimaryKeyedItem("one@one.com", "sdfsdfsdf");
 		PrimaryKeyedItem two = new PrimaryKeyedItem("two@two.com", "asdfsdfsd");
 
-		ArrayList<PrimaryKeyedItem> list = new ArrayList<PrimaryKeyedItem>(2);
+		ArrayList<PrimaryKeyedItem> list = new ArrayList<>(2);
 		list.add(one);
 		list.add(two);
 
@@ -112,9 +103,9 @@ public class RepositoryInitializerTest {
 
 	}
 
-	public static <T, ID extends Serializable> RepositoryInitializer<T,ID> initializerforRepository(CrudRepository<T, ID> repo) throws ClassNotFoundException {
+	public static <T, ID extends Serializable> RepositoryInitializer<T,ID> initializerforRepository(CrudRepository<T, ID> repo) {
 		XStreamMarshaller xstreamUnmarshaller = new XStreamMarshaller();
 		xstreamUnmarshaller.setAliases(Collections.singletonMap("objects", ArrayList.class));
-		return new RepositoryInitializer<T, ID>(repo, xstreamUnmarshaller);
+		return new RepositoryInitializer<>(repo, xstreamUnmarshaller);
 	}
 }

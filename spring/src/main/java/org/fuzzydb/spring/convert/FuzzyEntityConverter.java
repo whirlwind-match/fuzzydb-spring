@@ -226,7 +226,7 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 	private void addConvertedAttribute(MappedItem result,
 			String key, Object value) {
 
-		Assert.hasLength(key);
+		Assert.hasLength(key, "Missing 'key'");
 
 		// Nulls and Empty strings are ignored
 		if (value == null || value instanceof String && value.toString().length() == 0)
@@ -314,7 +314,7 @@ public class FuzzyEntityConverter<E, I extends MappedItem>
 
 	private void setEntityId(FuzzyPersistentEntity<E> persistentEntity,	final I source,
 			final BeanWrapper<FuzzyPersistentEntity<E>, E> wrapper) {
-		
+
 		Object id;
 		if (source instanceof IdFieldMappedFuzzyItem) {
 			id = ((IdFieldMappedFuzzyItem) source).getId();
