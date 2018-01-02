@@ -75,7 +75,9 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 	private <S extends T> void saveOrUpdate(S entity, I internalEntity) {
 		ID existingRef = getId(entity); // may be null for some strategies on create
 		ID ref = getPersistenceStrategy().saveOrUpdate(internalEntity, existingRef);
-		setId(entity, ref);
+		if (ref != null) {
+			setId(entity, ref);
+		}
 	}
 
 	@Override
@@ -86,7 +88,10 @@ public abstract class AbstractConvertingRepository<I,T,ID extends Serializable> 
 		I entityById = getPersistenceStrategy().findEntityById(id);
 		T external = fromInternal(entityById);
 		Ref<I> ref = getPersistenceStrategy().toInternalId(id);
-		setId(external, getPersistenceStrategy().toExternalId(ref));
+		ID extRef = getPersistenceStrategy().toExternalId(ref);
+		if (extRef != null) {
+			setId(external, extRef);
+		}
 		return external;
 	}
 
